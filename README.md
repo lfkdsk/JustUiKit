@@ -5,6 +5,17 @@ iOS UI Kit With Android-Style Tools
 [![](https://img.shields.io/badge/JustUiKit-v0.1.1-green.svg)](https://github.com/lfkdsk/JustUiKit)
 [![](https://img.shields.io/badge/support-iOS8%2B-green.svg)](https://github.com/lfkdsk/JustUiKit)
 
+## How To Install?
+
+Copy to your project
+
+Copy JustUiKit folder from the demo project to your project
+
+## Feedback
+Please send your feedback as long as there occurs any inconvenience or problem. You can contact me with:
+* Email: lfk_dsk@hotmail.com
+* Weibo: [@亦狂亦侠_亦温文](http://www.weibo.com/u/2443510260)
+* Blog:  [刘丰恺](https://lfkdsk.github.io)
 
 ## License
 

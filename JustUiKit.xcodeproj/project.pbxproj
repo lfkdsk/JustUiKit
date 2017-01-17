@@ -10,7 +10,7 @@
 		1F4A50AB70CA7FAA8452071D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F4A536A1248643E93F8A2CD /* Info.plist */; };
 		1F4A52920CBEDAC4E8EBB468 /* JustExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A53BFD8C6BC0B089C3A33 /* JustExtensionView.swift */; };
 		1F4A5478A2C2D99BD50069AC /* JustLinearLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5551A35FC077DE6B5B2F /* JustLinearLayout.swift */; };
-		1F4A571634F8208E3BE1671F /* JustUiKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F4A505755AC835F3762D3A3 /* JustUiKit.h */; };
+		1F4A571634F8208E3BE1671F /* JustUiKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F4A505755AC835F3762D3A3 /* JustUiKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F4A57A8CF6287D8D1AC7669 /* JustUiKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4A52E670CF313B8D6B30D8 /* JustUiKit.framework */; };
 		1F4A57D0DE7EA6295AB293D2 /* JustViewParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5456678972DE25244C98 /* JustViewParent.swift */; };
 		1F4A57E10237CAEE95A4650E /* Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5F9AF4A2DC76D4825118 /* Orientation.swift */; };
@@ -462,6 +462,7 @@
 				1F4A5AE4FCB2948544206D6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1F4A5848BF7D5C2F06C1A7AD /* Build configuration list for PBXNativeTarget "JustUiKitTests" */ = {
 			isa = XCConfigurationList;
@@ -470,6 +471,7 @@
 				1F4A56538A5E892CBABE47CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
