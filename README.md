@@ -9,6 +9,7 @@ iOS UI Kit With Android-Style Tools
 
 ### JustLinearLayout
 ![Vertical](art/vertical_layout.png)
+![Horizontal](art/horizontal_layout.png)
 
 
 
