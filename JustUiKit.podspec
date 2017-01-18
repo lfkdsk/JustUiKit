@@ -17,16 +17,11 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "JustUiKit"
-  s.version      = "0.1.1"
-  s.summary      = "TangramKit is A powerful iOS UI framework. It integrated the Android layout,AutoLayout,SizeClass, HTML/CSS float and flexbox functions."
+  s.version      = "0.1.2"
+  s.summary      = "iOS UI Kit With Android-Style Tools"
 
   s.description  = <<-DESC
-                   *TangramKit is a powerful iOS UI layout framework which is not an encapsulation based on the AutoLayout but is based on primary frame property and by overwriting the layoutSubview method to realize the subview's layout.
-                   *So It is unlimited to run in any version of iOS system.
-                   *Its idea and principle is referenced from the layout of the Android system, HTML/CSS float&flexbox, iOS AutoLayout and SizeClass.
-                   *You can implement the UI layout through the seven kinds of layout class below: TGLinearLayout, TGRelativeLayout, TGFrameLayout TGTableLayout, TGFlowLayout,TGFloatLayout and the support for SizeClass.
-                   *Powerful function, easy to use, barely constraint setting and fit various screen size perfectly are MyLayout's main advantages.
-                   *I hope you use TangramKit right now or in your next project will be happy!.
+                   *iOS UI Kit With Android-Style Tools.
                    DESC
 
   s.homepage     = "https://github.com/lfkdsk/JustUiKit"
@@ -77,7 +72,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/lfkdsk/JustUiKit.git", :tag => "0.1.1" }
+  s.source       = { :git => "https://github.com/lfkdsk/JustUiKit.git", :tag => "0.1.2" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -88,7 +83,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "JustUiKit/*.{swift}"
+  s.source_files  = "JustUiKit/**/*.swift"
   #s.exclude_files = "Classes/Exclude"
 
   #s.public_header_files = "JustUiKit/Lib/*.h"

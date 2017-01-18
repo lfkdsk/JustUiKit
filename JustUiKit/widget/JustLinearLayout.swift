@@ -280,8 +280,8 @@ class JustLinearLayout: JustViewGroup {
                 let params = child.linearExtension.layoutParams
 
                 if params.weight > 0.0 && maxWidthSize > 0.0 {
-                    if let childWidth: CGFloat = params.weight * maxWidthSize / totalWeight,
-                       childWidth > 0.0 {
+                    let childWidth: CGFloat = params.weight * maxWidthSize / totalWeight
+                    if childWidth > 0.0 {
                         childSizes[index].width = childWidth
                         continue
                     }
@@ -387,8 +387,8 @@ class JustLinearLayout: JustViewGroup {
                 let params = child.linearExtension.layoutParams
 
                 if params.weight > 0.0 && maxHeightSize > 0.0 {
-                    if let childHeight: CGFloat = params.weight * maxHeightSize / totalWeight,
-                       childHeight > 0.0 {
+                    let childHeight: CGFloat = params.weight * maxHeightSize / totalWeight
+                    if childHeight > 0.0 {
                         childSizes[index].height = childHeight
                         continue
                     }
@@ -406,7 +406,7 @@ class JustLinearLayout: JustViewGroup {
                                _ left: CGFloat,
                                _ right: CGFloat,
                                _ bottom: CGFloat) {
-        let height = bottom - top
+//        let height = bottom - top
         let padding = linearExtension.padding
 
         currentChildLayoutTop = top
@@ -529,7 +529,7 @@ class JustLinearLayout: JustViewGroup {
                                  _ left: CGFloat,
                                  _ right: CGFloat,
                                  _ bottom: CGFloat) {
-        let width = right - left
+//        let width = right - left
         let height = bottom - top
         let padding = linearExtension.padding
 
