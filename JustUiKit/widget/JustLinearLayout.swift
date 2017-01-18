@@ -675,7 +675,7 @@ class JustLinearLayout: JustViewGroup {
         view.linearExtension.layoutParams = params as! LinearLayoutParams
 
         if view.superview != nil {
-
+            return
         }
 
         if view is JustViewGroup {

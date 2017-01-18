@@ -13,8 +13,6 @@ iOS UI Kit With Android-Style Tools
 ![Horizontal](art/horizontal_layout.png)
 
 
-
-
 ## How To Install?
 
 * Copy to your project
