@@ -19,6 +19,23 @@ iOS UI Kit With Android-Style Tools
 
 ​      Copy JustUiKit folder from the demo project to your project
 
+* Installation with CocoaPods
+
+CocoaPods is a dependency manager for Objective-C/Swift, which automates and simplifies the process of using 3rd-party libraries like TangramKit in your projects. You can install it with the following command:
+
+`$ sudo gem install cocoapods`
+
+To integrate TangramKit into your Xcode project using CocoaPods, specify it in your Podfile:
+
+```ruby
+platform :ios, '8.0'
+pod 'JustUiKit', '~> 0.1.4'
+```
+
+Then, run the following command:
+
+`$ pod install`
+
 ## Feedback
 Please send your feedback as long as there occurs any inconvenience or problem. You can contact me with:
 * Email: lfk_dsk@hotmail.com
