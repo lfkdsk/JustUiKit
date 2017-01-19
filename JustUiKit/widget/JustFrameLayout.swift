@@ -5,8 +5,7 @@
 
 import UIKit
 
-class JustFrameLayout: JustViewGroup {
-
+open class JustFrameLayout: JustViewGroup {
 
 
 }

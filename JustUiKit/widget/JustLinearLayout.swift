@@ -5,7 +5,7 @@
 
 import UIKit
 
-class LinearLayoutParams: MarginLayoutParams {
+public class LinearLayoutParams: MarginLayoutParams {
     var weight: CGFloat = 0
     var layoutGravity: Int = Gravity.NO_GRAVITY.rawValue
     var minHeight: CGFloat = 0
@@ -136,7 +136,7 @@ private struct BindViewWithRect {
     }
 }
 
-class JustLinearLayout: JustViewGroup {
+open class JustLinearLayout: JustViewGroup {
 
     private static let VERTICAL_GRAVITY_MASK = 112
     private static let HORIZONTAL_GRAVITY_MASK = 7
@@ -168,7 +168,7 @@ class JustLinearLayout: JustViewGroup {
         super.init(coder: aDecoder)
     }
 
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         let childSizes: [CGSize]
         var childLayoutSize = CGSize.zero
 
@@ -637,7 +637,7 @@ class JustLinearLayout: JustViewGroup {
         }
     }
 
-    override func onLayout(_ changed: Bool,
+    override public func onLayout(_ changed: Bool,
                            _ top: CGFloat,
                            _ left: CGFloat,
                            _ right: CGFloat,
@@ -659,7 +659,7 @@ class JustLinearLayout: JustViewGroup {
         }
     }
 
-    override func onMeasure(_ size: CGSize) {
+    override public func onMeasure(_ size: CGSize) {
         super.onMeasure(size)
 
         if orientation == Orientation.Horizontal {
@@ -669,7 +669,7 @@ class JustLinearLayout: JustViewGroup {
         }
     }
 
-    override func addView(view: UIView, params: LayoutParams) {
+    override public func addView(view: UIView, params: LayoutParams) {
         super.addView(view: view, params: params)
 
         view.linearExtension.layoutParams = params as! LinearLayoutParams

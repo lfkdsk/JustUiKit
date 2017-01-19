@@ -6,7 +6,7 @@
 import Foundation
 import UIKit
 
-class JustViewGroup: UIView, JustViewParent, JustViewManager {
+open class JustViewGroup: UIView, JustViewParent, JustViewManager {
 
     private var parentView: JustViewParent? = nil;
 
@@ -44,7 +44,7 @@ class JustViewGroup: UIView, JustViewParent, JustViewManager {
 
     }
 
-    override func layoutSubviews() {
+    override open func layoutSubviews() {
 
         let top = frame.origin.y
         let left = frame.origin.x
@@ -56,33 +56,33 @@ class JustViewGroup: UIView, JustViewParent, JustViewManager {
         onLayout(isChanged, top, left, right, bottom)
     }
 
-    func getParent() -> JustViewParent {
+    public func getParent() -> JustViewParent {
         return parentView!
     }
 
-    func requestLayout() {
+    public func requestLayout() {
 
     }
 
-    func setParent(viewGroup: JustViewParent) {
+    public func setParent(viewGroup: JustViewParent) {
         self.parentView = viewGroup
     }
 
 
-    func hasParent() -> Bool {
+    public func hasParent() -> Bool {
         return parentView != nil
     }
 
 
-    func addView(view: UIView, params: LayoutParams) {
+    public func addView(view: UIView, params: LayoutParams) {
 
     }
 
-    func updateView(view: UIView, params: LayoutParams) {
+    public func updateView(view: UIView, params: LayoutParams) {
 
     }
 
-    func removeView(view: UIView) {
+    public func removeView(view: UIView) {
 //        self.willRemoveSubview(view)
     }
 }
