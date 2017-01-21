@@ -10,7 +10,14 @@ iOS UI Kit With Android-Style Tools
 
 ### JustLinearLayout
 ![Vertical](art/vertical_layout.png)
+
 ![Horizontal](art/horizontal_layout.png)
+
+### JustFrameLayout
+
+![Frame1](art/framelayout1.png)
+
+![Frame2](art/framelayout2.png)
 
 
 ## How To Install?
