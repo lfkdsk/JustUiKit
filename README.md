@@ -6,29 +6,15 @@ iOS UI Kit With Android-Style Tools
 [![](https://img.shields.io/badge/support-iOS8%2B-green.svg)](https://github.com/lfkdsk/JustUiKit)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JustUiKit.svg?style=flat-square)](https://cocoapods.org/pods/JustUiKit)
 
-## Quick Start
-
-### JustLinearLayout
-![Vertical](art/vertical_layout.png)
-
-![Horizontal](art/horizontal_layout.png)
-
-### JustFrameLayout
-
-![Frame1](art/framelayout1.png)
-
-![Frame2](art/framelayout2.png)
-
-
 ## How To Install?
 
 * Copy to your project
 
-​      Copy JustUiKit folder from the demo project to your project
+​       Copy JustUiKit folder from the demo project to your project
 
 * Installation with CocoaPods
 
-CocoaPods is a dependency manager for Objective-C/Swift, which automates and simplifies the process of using 3rd-party libraries like TangramKit in your projects. You can install it with the following command:
+  CocoaPods is a dependency manager for Objective-C/Swift, which automates and simplifies the process of using 3rd-party libraries like TangramKit in your projects. You can install it with the following command:
 
 `$ sudo gem install cocoapods`
 
@@ -42,6 +28,57 @@ pod 'JustUiKit', '~> 0.1.4'
 Then, run the following command:
 
 `$ pod install`
+
+## Quick Start
+
+### JustLinearLayout
+![Vertical](art/vertical_layout.png)
+
+![Horizontal](art/horizontal_layout.png)
+
+### JustFrameLayout
+
+FrameLayout is designed to block out an area on the screen to display a single item.
+Generally, FrameLayout should be used to hold a single child view, because it can be difficult to organize child views in a way that's scalable to different screen sizes without the children overlapping each other.
+You can, however, add multiple children to a FrameLayout and control their position within the FrameLayout by assigning gravity to each child, using the layoutGravity.
+
+#### Overlap on left:
+![Frame1](art/framelayout1.png)
+
+if don't use any `Margin` or `Padding` to change view's position. All the Views will be add like stack and overlap on the `left|top` of the screen. 
+
+Example:
+
+``` swift
+let parentView: FrameLayout = FrameLayout(width:MATCH_PARENT, height:MATCH_PARENT)
+let params: FrameLayoutParams = FrameLayoutParams(width: WRAP_CONTENT, height: WRAP_CONTENT)
+parentView.addView(createView(rgb:0xE4E1D8), params)
+parentView.addView(createView(rgb:0x89A49D), params)
+parentView.addView(createView(rgb:0x877B6B), params)
+```
+
+#### Layout With Gravity
+![Frame2](art/framelayout2.png)
+
+You can use horizontal and vertical gravity. Also You can use like `left|bottom`, `center_horizontal|center_vertical` to use them at the same time.
+
+Example:
+
+``` swift
+let parentView: FrameLayout = FrameLayout(width:MATCH_PARENT, height:MATCH_PARENT)
+let params: FrameLayoutParams = FrameLayoutParams(width: WRAP_CONTENT, height: WRAP_CONTENT)
+
+let b_l = FrameLayoutParams(params)
+b_l.layoutGravity = Gravity.BOTTOM | Gravity.TOP
+let c_r = FrameLayoutParams(params)
+c_r.layoutGravity = Gravity.CENTER_HORIZONTAL | Gravity.RIGHT
+parentView.addView(createView(rgb:0xE4E1D8), b_l)
+parentView.addView(createView(rgb:0x89A49D), c_r)
+parentView.addView(createView(rgb:0x877B6B), params)
+```
+
+
+
 
 ## Feedback
 Please send your feedback as long as there occurs any inconvenience or problem. You can contact me with:
@@ -74,6 +111,5 @@ Please send your feedback as long as there occurs any inconvenience or problem. 
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-
 
 ```
