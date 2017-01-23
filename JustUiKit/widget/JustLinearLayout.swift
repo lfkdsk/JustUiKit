@@ -369,7 +369,7 @@ open class JustLinearLayout: JustViewGroup {
                                _ right: CGFloat,
                                _ bottom: CGFloat) {
 //        let height = bottom - top
-        let padding = uiViewExtension.padding
+//        let padding = uiViewExtension.padding
 
         currentChildLayoutTop = top
 
@@ -493,7 +493,7 @@ open class JustLinearLayout: JustViewGroup {
                                  _ bottom: CGFloat) {
 //        let width = right - left
         let height = bottom - top
-        let padding = uiViewExtension.padding
+//        let padding = uiViewExtension.padding
 
         currentChildLayoutLeft = left
 
