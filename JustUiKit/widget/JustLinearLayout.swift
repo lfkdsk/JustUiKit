@@ -1,7 +1,24 @@
-//
-// Created by 刘丰恺 on 2017/1/4.
-// Copyright (c) 2017 ___FULL___. All rights reserved.
-//
+///    MIT License
+///
+///    Copyright (c) 2017 JustWe
+///
+///    Permission is hereby granted, free of charge, to any person obtaining a copy
+///    of this software and associated documentation files (the "Software"), to deal
+///    in the Software without restriction, including without limitation the rights
+///    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+///    copies of the Software, and to permit persons to whom the Software is
+///    furnished to do so, subject to the following conditions:
+///
+///    The above copyright notice and this permission notice shall be included in all
+///    copies or substantial portions of the Software.
+///
+///    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+///    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+///    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+///    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+///    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///    SOFTWARE.
 
 import UIKit
 
@@ -18,9 +35,9 @@ public class LinearLayoutParams: MarginLayoutParams {
         self.layoutGravity = Gravity.NO_GRAVITY.rawValue
     }
 
-    public init(width: CGFloat, height: CGFloat, gravity: Int) {
+    public init(width: CGFloat, height: CGFloat, layoutGravity: Int) {
         super.init(width: width, height: height)
-        self.layoutGravity = gravity
+        self.layoutGravity = layoutGravity
     }
 
     public init(linear: LinearLayoutParams) {
@@ -39,57 +56,6 @@ public class LinearLayoutParams: MarginLayoutParams {
 
     override public init(_ params: LayoutParams) {
         super.init(params)
-    }
-}
-
-public struct ExtensionLinear {
-    public var padding: Padding
-    internal var layoutParams: LinearLayoutParams
-
-    internal init(padding: Padding, params: LinearLayoutParams) {
-        self.padding = padding
-        self.layoutParams = params
-    }
-
-    internal init() {
-        self.padding = Padding()
-        self.layoutParams = LinearLayoutParams(LayoutParams.generateDefaultLayoutParams())
-    }
-}
-
-extension UIView: ExtensionParams {
-
-    private struct LinearKey {
-        static var ExtensionKey = "LinearExtensionKey"
-    }
-
-    fileprivate var linearExtension: ExtensionLinear {
-        set {
-            objc_setAssociatedObject(self, &LinearKey.ExtensionKey,
-                    newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-
-        get {
-            if let el = objc_getAssociatedObject(self, &LinearKey.ExtensionKey) as? ExtensionLinear {
-                return el
-            }
-            let el = ExtensionLinear()
-            objc_setAssociatedObject(self, &LinearKey.ExtensionKey,
-                    el, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return el
-        }
-    }
-
-    public func setLayoutParams(params: LayoutParams) {
-        linearExtension.layoutParams = params as! LinearLayoutParams
-    }
-
-    public func getLayoutParams() -> LayoutParams {
-        return linearExtension.layoutParams
-    }
-
-    public func setPadding(top: CGFloat, left: CGFloat, right: CGFloat, bottom: CGFloat) {
-        self.linearExtension.padding = Padding(top: top, left: left, right: right, bottom: bottom)
     }
 }
 
@@ -137,10 +103,6 @@ private struct BindViewWithRect {
 }
 
 open class JustLinearLayout: JustViewGroup {
-
-    private static let VERTICAL_GRAVITY_MASK = 112
-    private static let HORIZONTAL_GRAVITY_MASK = 7
-
     private var marginFlag: Int = Gravity.TOP | Gravity.LEFT
 
     private var currentChildLayoutTop: CGFloat = 0.0
@@ -177,7 +139,7 @@ open class JustLinearLayout: JustViewGroup {
             var index: Int = 0
             childSizes = measureHorizontal(size)
             for size in childSizes {
-                padding = subviews[index].linearExtension.padding
+                padding = subviews[index].uiViewExtension.padding
                 childLayoutSize.width += size.width + padding.paddingLeft + padding.paddingRight
                 childLayoutSize.height = max(childLayoutSize.height, size.height + padding.paddingTop + padding.paddingBottom)
                 index += 1
@@ -187,18 +149,18 @@ open class JustLinearLayout: JustViewGroup {
             var index: Int = 0
             childSizes = measureVertical(size)
             for size in childSizes {
-                padding = subviews[index].linearExtension.padding
+                padding = subviews[index].uiViewExtension.padding
                 childLayoutSize.width = max(childLayoutSize.width, size.width + padding.paddingLeft + padding.paddingRight)
                 childLayoutSize.height += size.height + padding.paddingTop + padding.paddingBottom
                 index += 1
             }
         }
-        return linearExtension.padding.getMaxSize(size: childLayoutSize)
+        return uiViewExtension.padding.getMaxSize(size: childLayoutSize)
     }
 
 
     public func measureHorizontal(_ size: CGSize) -> [CGSize] {
-        let selfSize = linearExtension.padding.getMinSize(size: size)
+        let selfSize = uiViewExtension.padding.getMinSize(size: size)
 
         let height = selfSize.height
         let width = selfSize.width
@@ -215,7 +177,7 @@ open class JustLinearLayout: JustViewGroup {
                 continue
             }
 
-            let params = child.linearExtension.layoutParams
+            let params: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
 
             totalWeight += params.weight
             var childHeight: CGFloat = 0
@@ -270,14 +232,14 @@ open class JustLinearLayout: JustViewGroup {
         }
 
         if totalWeight > 0.0 {
-            let layoutEx = linearExtension.padding
+            let layoutEx = uiViewExtension.padding
             maxWidthSize = width - layoutEx.paddingLeft - layoutEx.paddingRight
             for (index, child) in subviews.enumerated() {
                 if child.isHidden {
                     continue
                 }
 
-                let params = child.linearExtension.layoutParams
+                let params: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
 
                 if params.weight > 0.0 && maxWidthSize > 0.0 {
                     let childWidth: CGFloat = params.weight * maxWidthSize / totalWeight
@@ -296,12 +258,12 @@ open class JustLinearLayout: JustViewGroup {
     }
 
     private func measureVertical(_ size: CGSize) -> [CGSize] {
-        let selfSize = linearExtension.padding.getMinSize(size: size)
+        let selfSize = uiViewExtension.padding.getMinSize(size: size)
 
         let height = selfSize.height
         let width = selfSize.width
 
-        let layoutEx = linearExtension.padding
+        let layoutEx = uiViewExtension.padding
 
         var maxHeightSize: CGFloat = height
         let maxWidthSize: CGFloat = width
@@ -316,7 +278,7 @@ open class JustLinearLayout: JustViewGroup {
                 continue
             }
 
-            let params = child.linearExtension.layoutParams
+            let params: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
 
             totalWeight += params.weight
 
@@ -384,7 +346,7 @@ open class JustLinearLayout: JustViewGroup {
                     continue
                 }
 
-                let params = child.linearExtension.layoutParams
+                let params: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
 
                 if params.weight > 0.0 && maxHeightSize > 0.0 {
                     let childHeight: CGFloat = params.weight * maxHeightSize / totalWeight
@@ -407,7 +369,7 @@ open class JustLinearLayout: JustViewGroup {
                                _ right: CGFloat,
                                _ bottom: CGFloat) {
 //        let height = bottom - top
-        let padding = linearExtension.padding
+        let padding = uiViewExtension.padding
 
         currentChildLayoutTop = top
 
@@ -421,7 +383,7 @@ open class JustLinearLayout: JustViewGroup {
                 continue
             }
 
-            let childParams = child.linearExtension.layoutParams
+            let childParams: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
             let childWidth = size.width
             let childHeight = size.height
             var childTop: CGFloat = 0
@@ -443,7 +405,7 @@ open class JustLinearLayout: JustViewGroup {
 //            }
             childTop = currentChildLayoutTop + CGFloat(childParams.topMargin)
 
-            let horizontalGravity = childParams.layoutGravity & JustLinearLayout.HORIZONTAL_GRAVITY_MASK
+            let horizontalGravity = childParams.layoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK
 
             switch horizontalGravity {
             case Gravity.CENTER_HORIZONTAL.getValue():
@@ -471,10 +433,10 @@ open class JustLinearLayout: JustViewGroup {
                 childLeft -= left
             }
 
-            if childViewRect.count == 0 {
-                childLeft += padding.paddingLeft
-                childTop += padding.paddingTop
-            }
+//            if childViewRect.count == 0 {
+//                childLeft += padding.paddingLeft
+//                childTop += padding.paddingTop
+//            }
 
             child.frame = CGRect(
                     x: childLeft,
@@ -531,7 +493,7 @@ open class JustLinearLayout: JustViewGroup {
                                  _ bottom: CGFloat) {
 //        let width = right - left
         let height = bottom - top
-        let padding = linearExtension.padding
+        let padding = uiViewExtension.padding
 
         currentChildLayoutLeft = left
 
@@ -545,7 +507,7 @@ open class JustLinearLayout: JustViewGroup {
                 continue
             }
 
-            let childParams = child.linearExtension.layoutParams
+            let childParams: LinearLayoutParams = child.uiViewExtension.layoutParams as! LinearLayoutParams
             let childWidth = size.width
             let childHeight = size.height
             var childTop: CGFloat = 0
@@ -567,7 +529,7 @@ open class JustLinearLayout: JustViewGroup {
 
             childLeft = currentChildLayoutLeft + CGFloat(childParams.leftMargin)
 
-            let verticalGravity = childParams.layoutGravity & JustLinearLayout.VERTICAL_GRAVITY_MASK
+            let verticalGravity = childParams.layoutGravity & Gravity.VERTICAL_GRAVITY_MASK
 
             switch verticalGravity {
             case Gravity.CENTER_VERTICAL.getValue():
@@ -583,11 +545,11 @@ open class JustLinearLayout: JustViewGroup {
                 childTop -= top
                 childLeft -= left
             }
-
-            if childViewRect.count == 0 {
-                childLeft += padding.paddingLeft
-                childTop += padding.paddingTop
-            }
+//
+//            if childViewRect.count == 0 {
+//                childLeft += padding.paddingLeft
+//                childTop += padding.paddingTop
+//            }
 
             child.frame = CGRect(
                     x: childLeft,
@@ -638,12 +600,12 @@ open class JustLinearLayout: JustViewGroup {
     }
 
     override public func onLayout(_ changed: Bool,
-                           _ top: CGFloat,
-                           _ left: CGFloat,
-                           _ right: CGFloat,
-                           _ bottom: CGFloat) {
+                                  _ top: CGFloat,
+                                  _ left: CGFloat,
+                                  _ right: CGFloat,
+                                  _ bottom: CGFloat) {
         super.onLayout(changed, top, left, right, bottom)
-        let padding = linearExtension.padding
+        let padding = uiViewExtension.padding
 
         let pTop = top + padding.paddingTop,
                 pLeft = left + padding.paddingLeft,
@@ -672,7 +634,7 @@ open class JustLinearLayout: JustViewGroup {
     override public func addView(view: UIView, params: LayoutParams) {
         super.addView(view: view, params: params)
 
-        view.linearExtension.layoutParams = params as! LinearLayoutParams
+        view.uiViewExtension.layoutParams = params as! LinearLayoutParams
 
         if view.superview != nil {
             return

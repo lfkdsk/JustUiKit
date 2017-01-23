@@ -1,7 +1,24 @@
-//
-// Created by 刘丰恺 on 2017/1/2.
-// Copyright (c) 2017 ___FULL___. All rights reserved.
-//
+///    MIT License
+///
+///    Copyright (c) 2017 JustWe
+///
+///    Permission is hereby granted, free of charge, to any person obtaining a copy
+///    of this software and associated documentation files (the "Software"), to deal
+///    in the Software without restriction, including without limitation the rights
+///    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+///    copies of the Software, and to permit persons to whom the Software is
+///    furnished to do so, subject to the following conditions:
+///
+///    The above copyright notice and this permission notice shall be included in all
+///    copies or substantial portions of the Software.
+///
+///    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+///    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+///    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+///    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+///    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///    SOFTWARE.
 
 
 import UIKit
@@ -39,5 +56,56 @@ public struct Padding {
     public func getMaxSize(size: CGSize) -> CGSize {
         return CGSize(width: max(size.width + paddingLeft + paddingRight, 0),
                 height: max(size.height + paddingTop + paddingBottom, 0))
+    }
+}
+
+public struct UIViewExtension {
+    public var padding: Padding
+    internal var layoutParams: LayoutParams
+
+    internal init(padding: Padding, params: LayoutParams) {
+        self.padding = padding
+        self.layoutParams = params
+    }
+
+    internal init() {
+        self.padding = Padding()
+        self.layoutParams = LayoutParams.generateDefaultLayoutParams()
+    }
+}
+
+extension UIView: ExtensionParams {
+
+    private struct Key {
+        static var ExtensionKey = "ExtensionKey"
+    }
+
+    public var uiViewExtension: UIViewExtension {
+        set {
+            objc_setAssociatedObject(self, &Key.ExtensionKey,
+                    newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+
+        get {
+            if let el = objc_getAssociatedObject(self, &Key.ExtensionKey) as? UIViewExtension {
+                return el
+            }
+            let el = UIViewExtension()
+            objc_setAssociatedObject(self, &Key.ExtensionKey,
+                    el, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return el
+        }
+    }
+
+    public func setLayoutParams(params: LayoutParams) {
+        uiViewExtension.layoutParams = params
+    }
+
+    public func getLayoutParams() -> LayoutParams {
+        return uiViewExtension.layoutParams
+    }
+
+    public func setPadding(top: CGFloat, left: CGFloat, right: CGFloat, bottom: CGFloat) {
+        self.uiViewExtension.padding = Padding(top: top, left: left, right: right, bottom: bottom)
     }
 }
