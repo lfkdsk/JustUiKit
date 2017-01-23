@@ -1,5 +1,5 @@
 # JustUiKit
-iOS UI Kit With Android-Style Tools
+iOS UI Kit With Android-Style Tools. JustUiKit contains `JustLinearLayout`, `JustFrameLayout` and so on. It is designed to make Android developers build iOS UI easily. Also for iOS developers, it provides a new way to build UI.
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/lfkdsk/JustUiKit/master/LICENSE)
 [![](https://img.shields.io/badge/JustUiKit-v0.1.4-green.svg)](https://github.com/lfkdsk/JustUiKit)
@@ -16,18 +16,18 @@ iOS UI Kit With Android-Style Tools
 
   CocoaPods is a dependency manager for Objective-C/Swift, which automates and simplifies the process of using 3rd-party libraries like TangramKit in your projects. You can install it with the following command:
 
-`$ sudo gem install cocoapods`
+  `$ sudo gem install cocoapods`
 
-To integrate TangramKit into your Xcode project using CocoaPods, specify it in your Podfile:
+  To integrate TangramKit into your Xcode project using CocoaPods, specify it in your Podfile:	
 
-```ruby
-platform :ios, '8.0'
-pod 'JustUiKit', '~> 0.1.4'
-```
+  ```ruby
+  platform :ios, '8.0'
+  pod 'JustUiKit', '~> 0.1.4'
+  ```
 
-Then, run the following command:
+  ​Then, run the following command:
 
-`$ pod install`
+  `$ pod install`
 
 ## Quick Start
 
@@ -58,6 +58,20 @@ parentView.addView(createView(), marginParams)
   ![Horizontal](art/horizontal_layout.png)
 
 With the `Padding` in four directions, you can remain inner space of the view. And `Weight` describes how the child views are positioned. Defaults to Gravity.TOP | Gravity.LEFT. If this layout has a VERTICAL orientation, this controls where all the child views are placed if there is extra vertical space. If this layout has a HORIZONTAL orientation, this controls the alignment of the children.
+
+``` swift
+let parentView = JustLinearLayout(frame: UIScreen.main.bounds, orientation: .Vertical)
+let params = LinearLayoutParams(
+                width: LayoutParams.WRAP_CONTENT,
+                height: LayoutParams.WRAP_CONTENT)
+params.weight = 1
+let paddingParams = LinearLayoutParams(params)
+paddingParams.paddingTop = 10
+parentView.addView(createView(), params)
+parentView.addView(createView(), paddingParams)
+```
+
+
 
 ### JustFrameLayout
 
