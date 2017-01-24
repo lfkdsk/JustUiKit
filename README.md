@@ -71,8 +71,6 @@ parentView.addView(createView(), params)
 parentView.addView(createView(), paddingParams)
 ```
 
-
-
 ### JustFrameLayout
 
 FrameLayout is designed to block out an area on the screen to display a single item.
