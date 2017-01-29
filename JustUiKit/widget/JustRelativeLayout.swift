@@ -296,10 +296,10 @@ open class JustRelativeLayout: JustViewGroup {
 
     private func getRelatedViewParams(rules: [BindViewWithRule], relation: RelativeRule) ->
             RelativeLayoutParams? {
-        var view: UIView = getRelatedView(rules: rules, relation: relation)!
+        var view: UIView? = getRelatedView(rules: rules, relation: relation)
 
         if view != nil {
-            let params: RelativeLayoutParams = view.getLayoutParams() as! RelativeLayoutParams
+            let params: RelativeLayoutParams = view!.getLayoutParams() as! RelativeLayoutParams
             return params
         }
 
@@ -310,20 +310,21 @@ open class JustRelativeLayout: JustViewGroup {
         let id = rules[relation.getValue()].VIEW.getViewId()
 
         if id.viewId != 0 {
-            var node: Node = mDGraph.mKeyNodes.object(forKey: id)!
+            var node: Node? = mDGraph.mKeyNodes.object(forKey: id)
+
             if node == nil {
                 return nil
             }
 
-            var view: UIView = node.view!
+            var view: UIView = (node?.view)!
 
             while view.isHidden {
                 let l_rules: [BindViewWithRule] = (view.getLayoutParams() as! RelativeLayoutParams).getRules()
-                node = mDGraph.mKeyNodes.object(forKey: l_rules[relation.getValue()].VIEW.getViewId())!
+                node = mDGraph.mKeyNodes.object(forKey: l_rules[relation.getValue()].VIEW.getViewId())
                 if node == nil {
                     return nil
                 }
-                view = node.view!
+                view = (node?.view)!
             }
 
             return view
@@ -357,7 +358,7 @@ open class JustRelativeLayout: JustViewGroup {
     }
 
     fileprivate class Node {
-        var view: UIView?
+        var view: UIView!
 
         var dependents: NSMapTable = NSMapTable<Node, DependencyGraph>()
 
@@ -370,9 +371,11 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         static func acquire(view: UIView) -> Node {
-            var node = mPool.acquire()
+            var node: Node? = mPool.acquire()
             if node == nil {
                 node = Node(view: view)
+            } else {
+                node!.view = view
             }
             return node!
         }
