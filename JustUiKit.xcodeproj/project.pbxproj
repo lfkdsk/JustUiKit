@@ -366,7 +366,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/** \"${PROJECT_DIR}/JustUiKitSample\"/**";
 			};
 			name = Debug;
 		};
@@ -438,7 +438,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/** \"${PROJECT_DIR}/JustUiKitSample\"/**";
 			};
 			name = Release;
 		};

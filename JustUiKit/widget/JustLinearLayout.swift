@@ -24,7 +24,7 @@ import UIKit
 
 public class LinearLayoutParams: MarginLayoutParams {
     var weight: CGFloat = 0
-    var layoutGravity: Int = Gravity.NO_GRAVITY.rawValue
+    var layoutGravity: Gravity = Gravity.NO_GRAVITY
     var minHeight: CGFloat = 0
     var minWidth: CGFloat = 0
     var maxHeight: CGFloat = CGFloat.greatestFiniteMagnitude
@@ -32,10 +32,10 @@ public class LinearLayoutParams: MarginLayoutParams {
 
     override public init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
-        self.layoutGravity = Gravity.NO_GRAVITY.rawValue
+        self.layoutGravity = Gravity.NO_GRAVITY
     }
 
-    public init(width: CGFloat, height: CGFloat, layoutGravity: Int) {
+    public init(width: CGFloat, height: CGFloat, layoutGravity: Gravity) {
         super.init(width: width, height: height)
         self.layoutGravity = layoutGravity
     }
@@ -103,7 +103,7 @@ private struct BindViewWithRect {
 }
 
 open class JustLinearLayout: JustViewGroup {
-    private var marginFlag: Int = Gravity.TOP | Gravity.LEFT
+    private var marginFlag: Gravity = Gravity.TOP | Gravity.LEFT
 
     private var currentChildLayoutTop: CGFloat = 0.0
     private var currentChildLayoutLeft: CGFloat = 0.0
@@ -405,7 +405,7 @@ open class JustLinearLayout: JustViewGroup {
 //            }
             childTop = currentChildLayoutTop + CGFloat(childParams.topMargin)
 
-            let horizontalGravity = childParams.layoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK
+            let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
 
             switch horizontalGravity {
             case Gravity.CENTER_HORIZONTAL.getValue():
@@ -529,7 +529,7 @@ open class JustLinearLayout: JustViewGroup {
 
             childLeft = currentChildLayoutLeft + CGFloat(childParams.leftMargin)
 
-            let verticalGravity = childParams.layoutGravity & Gravity.VERTICAL_GRAVITY_MASK
+            let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
 
             switch verticalGravity {
             case Gravity.CENTER_VERTICAL.getValue():

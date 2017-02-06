@@ -112,7 +112,7 @@ extension UIView: ExtensionParams {
 
 extension UIView {
 
-    private struct Key {
+    private struct IdKey {
         static var ExtensionKey = "IdExtensionKey"
     }
 
@@ -135,16 +135,16 @@ extension UIView {
 
     private var viewId: InnerInteger {
         set {
-            objc_setAssociatedObject(self, &Key.ExtensionKey,
+            objc_setAssociatedObject(self, &IdKey.ExtensionKey,
                     newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
 
         get {
-            if let el = objc_getAssociatedObject(self, &Key.ExtensionKey) as? InnerInteger {
+            if let el = objc_getAssociatedObject(self, &IdKey.ExtensionKey) as? InnerInteger {
                 return el
             }
             let el = InnerInteger(-1)
-            objc_setAssociatedObject(self, &Key.ExtensionKey,
+            objc_setAssociatedObject(self, &IdKey.ExtensionKey,
                     el, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return el
         }
