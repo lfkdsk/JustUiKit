@@ -27,14 +27,14 @@ import UIKit
 /// This params just has layoutGravity
 
 public class FrameLayoutParams: MarginLayoutParams {
-    var layoutGravity: Int = Gravity.NO_GRAVITY.getValue()
+    public var layoutGravity: Gravity = Gravity.NO_GRAVITY
 
-    public init(width: CGFloat, height: CGFloat, layoutGravity: Int) {
+    public init(width: CGFloat, height: CGFloat, layoutGravity: Gravity) {
         super.init(width: width, height: height)
         self.layoutGravity = layoutGravity
     }
 
-    override init(width: CGFloat, height: CGFloat) {
+    public override init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
     }
 
@@ -49,21 +49,14 @@ public class FrameLayoutParams: MarginLayoutParams {
         super.init(source)
     }
 
+    public static func generateLayoutParams() -> FrameLayoutParams {
+        return FrameLayoutParams(width: LayoutParams.WRAP_CONTENT, height: LayoutParams.WRAP_CONTENT)
+    }
 }
 
 open class JustFrameLayout: JustViewGroup {
 
     private var childViewSizes: [CGSize] = []
-
-    override init(frame groupFrame: CGRect) {
-        super.init(frame: groupFrame)
-    }
-    override init(frame groupFrame: CGRect, parentView: JustViewParent) {
-        super.init(frame: groupFrame, parentView: parentView)
-    }
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         let childSizes: [CGSize]
@@ -183,8 +176,8 @@ open class JustFrameLayout: JustViewGroup {
             var childTop: CGFloat = 0
             var childLeft: CGFloat = 0
 
-            let verticalGravity = childParams.layoutGravity & Gravity.VERTICAL_GRAVITY_MASK
-            let horizontalGravity = childParams.layoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK
+            let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
+            let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
 
             switch verticalGravity {
             case Gravity.CENTER_VERTICAL.getValue():
@@ -215,7 +208,8 @@ open class JustFrameLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: LayoutParams) {
+    override public func addView(view: UIView, params: LayoutParams
+                            = FrameLayoutParams.generateLayoutParams()) {
         super.addView(view: view, params: params)
 
         view.uiViewExtension.layoutParams = params as! FrameLayoutParams

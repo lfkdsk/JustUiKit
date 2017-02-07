@@ -25,14 +25,14 @@ public class Gravity {
     static let VERTICAL_GRAVITY_MASK = 112
     static let HORIZONTAL_GRAVITY_MASK = 7
 
-    fileprivate static let NO_GRAVITY_V = 0
-    fileprivate static let TOP_V = 48
-    fileprivate static let BOTTOM_V = 80
-    fileprivate static let LEFT_V = 3
-    fileprivate static let RIGHT_V = 5
-    fileprivate static let CENTER_VERTICAL_V = 16
-    fileprivate static let CENTER_HORIZONTAL_V = 1
-    fileprivate static let CENTER_V = 17
+    private static let NO_GRAVITY_V = 0
+    private static let TOP_V = 48
+    private static let BOTTOM_V = 80
+    private static let LEFT_V = 3
+    private static let RIGHT_V = 5
+    private static let CENTER_VERTICAL_V = 16
+    private static let CENTER_HORIZONTAL_V = 1
+    private static let CENTER_V = 17
 
     public static let NO_GRAVITY = Gravity(value: NO_GRAVITY_V)
     public static let TOP = Gravity(value: TOP_V)
@@ -43,10 +43,10 @@ public class Gravity {
     public static let CENTER_HORIZONTAL = Gravity(value: CENTER_HORIZONTAL_V)
     public static let CENTER = Gravity(value: CENTER_V)
 
-    fileprivate var value: Int = NO_GRAVITY.getValue()
+    private let innerValue: Int
 
-    public init(value: Int) {
-        self.value = value
+    private init(value: Int) {
+        self.innerValue = value
     }
 
     public static func |(left: Gravity, right: Gravity) -> Gravity {
@@ -62,7 +62,6 @@ public class Gravity {
     }
 
     public func getValue() -> Int {
-        return value
+        return innerValue
     }
-
 }

@@ -23,12 +23,12 @@
 import UIKit
 
 public class LinearLayoutParams: MarginLayoutParams {
-    var weight: CGFloat = 0
-    var layoutGravity: Gravity = Gravity.NO_GRAVITY
-    var minHeight: CGFloat = 0
-    var minWidth: CGFloat = 0
-    var maxHeight: CGFloat = CGFloat.greatestFiniteMagnitude
-    var maxWidth: CGFloat = CGFloat.greatestFiniteMagnitude
+    public var weight: CGFloat = 0
+    public var layoutGravity: Gravity = Gravity.NO_GRAVITY
+    public var minHeight: CGFloat = 0
+    public var minWidth: CGFloat = 0
+    public var maxHeight: CGFloat = CGFloat.greatestFiniteMagnitude
+    public var maxWidth: CGFloat = CGFloat.greatestFiniteMagnitude
 
     override public init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
