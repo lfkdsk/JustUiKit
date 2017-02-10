@@ -637,7 +637,7 @@ open class JustLinearLayout: JustViewGroup {
     }
 
     public func addView(view: UIView, params: inout LinearLayoutParams) {
-        view.uiViewExtension.layoutParams = params as! LinearLayoutParams
+        view.uiViewExtension.layoutParams = params
 
         if view.superview != nil {
             return
