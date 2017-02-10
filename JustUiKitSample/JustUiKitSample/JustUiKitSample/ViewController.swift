@@ -144,11 +144,35 @@ class ViewController: UIViewController {
         lfkdsk.addView(view: createSectionLabel("ssss"), params: center)
     }
 
+    func loadRelativeLayout() {
+        self.view = JustRelativeLayout(frame: UIScreen.main.bounds)
+        view.backgroundColor = UIColor(rgb: 0xFF8C00)
+
+        let lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
+
+        let params = JustRelativeLayout(width: LayoutParams.WRAP_CONTENT,
+                height: LayoutParams.WRAP_CONTENT)
+
+        let view1 = createSectionLabel("FFF")
+
+
+    }
+
+    func addViewToLayout() {
+        self.view = JustRelativeLayout(frame: UIScreen.main.bounds)
+        view.backgroundColor = UIColor(rgb: 0xFF8C00)
+
+        let lfkdsk: JustFrameLayout = view as! JustFrameLayout
+
+        let view1 = createSectionLabel("FFFFFFFFFFF__________")
+        lfkdsk.addView(view: view1)
+    }
 
     override func loadView() {
         super.loadView()
 
-        loadFrameLayout()
+//        loadFrameLayout()
+        addViewToLayout()
     }
 
 }

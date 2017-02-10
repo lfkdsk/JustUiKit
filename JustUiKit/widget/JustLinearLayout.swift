@@ -57,6 +57,11 @@ public class LinearLayoutParams: MarginLayoutParams {
     override public init(_ params: LayoutParams) {
         super.init(params)
     }
+
+    public static func generateDefaultParams() -> LinearLayoutParams {
+        return LinearLayoutParams(width: LayoutParams.WRAP_CONTENT,
+                height: LayoutParams.WRAP_CONTENT)
+    }
 }
 
 fileprivate struct Rect {
@@ -631,8 +636,8 @@ open class JustLinearLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: LayoutParams) {
-        super.addView(view: view, params: params)
+    override public func addView(view: UIView, params: inout LayoutParams) {
+        super.addView(view: view, params: &params)
 
         view.uiViewExtension.layoutParams = params as! LinearLayoutParams
 
@@ -645,6 +650,12 @@ open class JustLinearLayout: JustViewGroup {
         }
 
         addSubview(view)
+    }
+
+    override public func addView(view: UIView) {
+        super.addView(view: view)
+        var params: LayoutParams = LinearLayoutParams.generateDefaultParams()
+        self.addView(view: view, params: &params)
     }
 
 }

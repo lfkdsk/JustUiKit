@@ -115,15 +115,15 @@ public enum RelativeRule: Int {
     }
 }
 
+fileprivate enum BindType {
+    case UNBIND
+    case BIND
+}
+
+
 fileprivate struct BindViewWithRule {
-
-    fileprivate enum BindType {
-        case UNBIND
-        case BIND
-    }
-
     var RULE: RelativeRule = .NONE_RULE
-    var VIEW: UIView
+    var VIEW: UIView?
     var TYPE: BindType = .UNBIND
 
     init(view: UIView, rule: RelativeRule) {
@@ -133,7 +133,7 @@ fileprivate struct BindViewWithRule {
     }
 
     private init() {
-        VIEW = UIView(frame: CGRect.zero)
+
     }
 
     fileprivate static func generateDefaultBind() -> BindViewWithRule {
@@ -147,6 +147,13 @@ public class RelativeLayoutParams: MarginLayoutParams {
             [BindViewWithRule](
                     repeating: BindViewWithRule.generateDefaultBind(),
                     count: RelativeRule.VERB_COUNT)
+
+    public var mLeft: CGFloat = 0,
+            mTop: CGFloat = 0,
+            mRight: CGFloat = 0,
+            mBottom: CGFloat = 0
+
+    public var alignWithParent: Bool = false
 
     override init(_ source: LayoutParams) {
         super.init(source)
@@ -165,16 +172,44 @@ public class RelativeLayoutParams: MarginLayoutParams {
         bind.VIEW = view
         bind.RULE = rule
         bind.TYPE = .BIND
+        self.setAlignParentValue(rule, true)
     }
 
     public func addRule(rule: RelativeRule) {
         var bind = rules[rule.getValue()]
         bind.RULE = rule
         bind.TYPE = .BIND
+        self.setAlignParentValue(rule, true)
     }
 
     public func removeRule(rule: RelativeRule) {
         rules[rule.getValue()] = BindViewWithRule.generateDefaultBind()
+        removeAlignParentValue()
+    }
+
+    private func setAlignParentValue(_ rule: RelativeRule,
+                                     _ value: Bool) {
+        switch rule {
+        case .ALIGN_PARENT_RIGHT, .ALIGN_PARENT_LEFT, .ALIGN_PARENT_TOP, .ALIGN_PARENT_BOTTOM:
+            self.alignWithParent = value
+        default:
+            break
+        }
+    }
+
+    private func removeAlignParentValue() {
+        var hasParentRule: Bool = false
+        loop: for item in rules {
+            switch item.RULE {
+            case .ALIGN_PARENT_RIGHT, .ALIGN_PARENT_LEFT, .ALIGN_PARENT_TOP, .ALIGN_PARENT_BOTTOM:
+                hasParentRule = true
+                break loop
+            default:
+                continue
+            }
+        }
+
+        self.alignWithParent = hasParentRule
     }
 
     public func alignParentTop() {
@@ -236,6 +271,11 @@ public class RelativeLayoutParams: MarginLayoutParams {
     public func centerInVertical() {
         addRule(rule: .CENTER_VERTICAL)
     }
+
+    public static func generateDefaultParams() -> RelativeLayoutParams {
+        return RelativeLayoutParams(width: LayoutParams.WRAP_CONTENT,
+                height: LayoutParams.WRAP_CONTENT)
+    }
 }
 
 open class JustRelativeLayout: JustViewGroup {
@@ -243,6 +283,8 @@ open class JustRelativeLayout: JustViewGroup {
     private var mSortedHorizontalChildren: [UIView] = []
 
     private var mSortedVerticalChildren: [UIView] = []
+
+    private var mMeasuredView: [CGSize] = []
 
     private var mDGraph: DependencyGraph = DependencyGraph()
 
@@ -272,6 +314,12 @@ open class JustRelativeLayout: JustViewGroup {
 
     override public func onMeasure(_ size: CGSize) {
         super.onMeasure(size)
+
+        let selfSize = uiViewExtension.padding.getMinSize(size: size)
+
+        let height = selfSize.height
+        let width = selfSize.width
+
         if mDirtyFresh {
             mDirtyFresh = false
             sortChildren()
@@ -280,6 +328,8 @@ open class JustRelativeLayout: JustViewGroup {
         var views: [UIView] = mSortedHorizontalChildren
         var count = views.count
 
+        var childSizes = [CGSize](repeating: CGSize(width: -1, height: -1), count: count)
+
         for index in 0 ..< count {
             var child: UIView = views[index]
 
@@ -287,16 +337,145 @@ open class JustRelativeLayout: JustViewGroup {
                 continue
             }
 
-            let params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
-            let rules: [BindViewWithRule] = params.getRules()
+            var params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
+            var rules: [BindViewWithRule] = params.getRules()
 
+            applyHorizontalSizeRules(params: &params, width: width, rules: &rules)
+            measureChildHorizontal(view: &child, group: &childSizes[index], width: width, height: height)
 
+            applyVerticalSizeRules(params: &params, width: width, rules: &rules)
+            measureChildVertical(view: &child, group: &childSizes[index], width: width, height: height)
         }
     }
 
-    private func getRelatedViewParams(rules: [BindViewWithRule], relation: RelativeRule) ->
+    private func applyVerticalSizeRules(params: inout RelativeLayoutParams, width: CGFloat,
+                                        rules: inout [BindViewWithRule]) {
+
+    }
+
+    private func measureChildVertical(view: inout UIView,
+                                      group: inout CGSize,
+                                      width: CGFloat,
+                                      height: CGFloat) {
+        var childWidth: CGFloat = 0
+        var childSize: CGSize = CGSize()
+        let params: RelativeLayoutParams = view.uiViewExtension.layoutParams as! RelativeLayoutParams
+
+        switch (params.width) {
+        case LayoutParams.MATCH_PARENT:
+            childWidth = width
+        case LayoutParams.WRAP_CONTENT:
+            childSize = view.sizeThatFits(
+                    CGSize(width: width,
+                            height: height))
+
+            childWidth = childSize.width
+        default:
+            childWidth = params.width
+        }
+
+        childWidth = min(childWidth, width)
+
+        group.width = childWidth
+    }
+
+    private func measureChildHorizontal(view: inout UIView,
+                                        group: inout CGSize,
+                                        width: CGFloat,
+                                        height: CGFloat) {
+        let params: RelativeLayoutParams = view.uiViewExtension.layoutParams as! RelativeLayoutParams
+
+        var childHeight: CGFloat = 0
+        var childSize: CGSize = CGSize()
+
+        switch params.height {
+        case LayoutParams.MATCH_PARENT:
+            childHeight = width
+        case LayoutParams.WRAP_CONTENT:
+            childSize = view.sizeThatFits(
+                    CGSize(width: width,
+                            height: height))
+            childHeight = childSize.height
+        default:
+            childHeight = params.height
+        }
+
+        childHeight = min(childHeight, height)
+        group.height = childHeight
+
+        if childSize.height == childHeight {
+            group.width = childSize.width
+        }
+    }
+
+    ///
+    /// horizontal rules
+    ///
+    private func applyHorizontalSizeRules(params: inout RelativeLayoutParams, width: CGFloat,
+                                          rules: inout [BindViewWithRule]) {
+
+        func hasBindView(rule: RelativeRule) -> Bool {
+            let ruleValue: BindViewWithRule = rules[rule.getValue()]
+            return ruleValue.VIEW != nil && ruleValue.TYPE == BindType.BIND
+        }
+
+        var anchorParams: RelativeLayoutParams?
+
+        // min
+        params.mLeft = CGFloat(Int.min)
+        params.mRight = CGFloat(Int.min)
+
+        // get the view left of current View
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .LEFT_OF)
+
+        if anchorParams != nil {
+            params.mRight = anchorParams!.mLeft
+                    - CGFloat(anchorParams!.leftMargin + anchorParams!.rightMargin)
+        } else if params.alignWithParent && hasBindView(rule: .LEFT_OF) {
+            if width >= 0 {
+                params.mRight = width - CGFloat(params.rightMargin)
+            }
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .RIGHT_OF)
+
+        if anchorParams != nil {
+            params.mLeft = anchorParams!.mRight + CGFloat(anchorParams!.leftMargin + anchorParams!.rightMargin)
+        } else if params.alignWithParent && hasBindView(rule: .RIGHT_OF) {
+            params.mLeft = CGFloat(params.leftMargin)
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_LEFT)
+        if anchorParams != nil {
+            params.mLeft = anchorParams!.mLeft + CGFloat(params.leftMargin)
+        } else if params.alignWithParent && hasBindView(rule: .ALIGN_LEFT) {
+            params.mLeft = CGFloat(params.leftMargin)
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_RIGHT);
+        if (anchorParams != nil) {
+            params.mRight = anchorParams!.mRight - CGFloat(params.rightMargin)
+        } else if params.alignWithParent && hasBindView(rule: .ALIGN_RIGHT) {
+            if (width >= 0) {
+                params.mRight = width - CGFloat(params.rightMargin)
+            }
+        }
+
+        if hasBindView(rule: .ALIGN_PARENT_LEFT) {
+            params.mLeft = CGFloat(params.leftMargin)
+        }
+
+        if hasBindView(rule: .ALIGN_PARENT_RIGHT) {
+            if (width >= 0) {
+                params.mRight = width - CGFloat(params.rightMargin)
+            }
+        }
+    }
+
+
+    private func getRelatedViewParams(rules: inout [BindViewWithRule], relation: RelativeRule) ->
             RelativeLayoutParams? {
-        var view: UIView? = getRelatedView(rules: rules, relation: relation)
+        let view: UIView? = getRelatedView(rules: rules, relation: relation)
 
         if view != nil {
             let params: RelativeLayoutParams = view!.getLayoutParams() as! RelativeLayoutParams
@@ -307,7 +486,13 @@ open class JustRelativeLayout: JustViewGroup {
     }
 
     private func getRelatedView(rules: [BindViewWithRule], relation: RelativeRule) -> UIView? {
-        let id = rules[relation.getValue()].VIEW.getViewId()
+        let view = rules[relation.getValue()].VIEW
+
+        if view == nil {
+            return view
+        }
+
+        let id = view!.getViewId()
 
         if id.viewId != 0 {
             var node: Node? = mDGraph.mKeyNodes.object(forKey: id)
@@ -320,7 +505,7 @@ open class JustRelativeLayout: JustViewGroup {
 
             while view.isHidden {
                 let l_rules: [BindViewWithRule] = (view.getLayoutParams() as! RelativeLayoutParams).getRules()
-                node = mDGraph.mKeyNodes.object(forKey: l_rules[relation.getValue()].VIEW.getViewId())
+                node = mDGraph.mKeyNodes.object(forKey: l_rules[relation.getValue()].VIEW?.getViewId())
                 if node == nil {
                     return nil
                 }
@@ -335,26 +520,14 @@ open class JustRelativeLayout: JustViewGroup {
 
     private func sortChildren() {
         let graph = mDGraph
+
         for (_, child) in subviews.enumerated() {
             graph.add(view: child)
         }
+
         mSortedHorizontalChildren = graph.getSortedViews(rules: RelativeRule.RULES_HORIZONTAL)
+
         mSortedVerticalChildren = graph.getSortedViews(rules: RelativeRule.RULES_VERTICAL)
-    }
-
-    override public func addView(view: UIView, params: LayoutParams) {
-        view.uiViewExtension.layoutParams = params as! RelativeLayoutParams
-
-        if view.superview != nil {
-            return
-        }
-
-        if view is JustViewGroup {
-            (view as! JustViewGroup).setParent(viewGroup: self)
-        }
-
-        view.setViewId(id: UIView.generateViewId())
-        addSubview(view)
     }
 
     fileprivate class Node {
@@ -471,14 +644,14 @@ open class JustRelativeLayout: JustViewGroup {
                     let rule: BindViewWithRule = rules[rulesFilter[index].getValue()]
 
                     if rule.RULE.getValue() > 0 {
-                        let dependency = keyNodes.object(forKey: rule.VIEW.getViewId())
+                        let dependency = keyNodes.object(forKey: rule.VIEW?.getViewId())
 
                         if dependency == nil || dependency! == node {
                             continue
                         }
 
                         dependency?.dependents.setObject(self, forKey: node)
-                        node.dependencies.setObject(dependency, forKey: rule.VIEW.getViewId())
+                        node.dependencies.setObject(dependency, forKey: rule.VIEW?.getViewId())
                     }
                 }
             }
@@ -496,4 +669,25 @@ open class JustRelativeLayout: JustViewGroup {
         }
     }
 
+    override public func addView(view: UIView, params: inout LayoutParams) {
+        super.addView(view: view, params: &params)
+
+        view.uiViewExtension.layoutParams = params as! RelativeLayoutParams
+
+        if view.superview != nil {
+            return
+        }
+
+        if view is JustViewGroup {
+            (view as! JustViewGroup).setParent(viewGroup: self)
+        }
+
+        addSubview(view)
+    }
+
+    override public func addView(view: UIView) {
+        super.addView(view: view)
+        var params: LayoutParams = RelativeLayoutParams.generateDefaultParams()
+        self.addView(view: view, params: &params)
+    }
 }

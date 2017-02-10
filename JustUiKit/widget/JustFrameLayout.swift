@@ -49,7 +49,7 @@ public class FrameLayoutParams: MarginLayoutParams {
         super.init(source)
     }
 
-    public static func generateLayoutParams() -> FrameLayoutParams {
+    public static func generateDefaultParams() -> FrameLayoutParams {
         return FrameLayoutParams(width: LayoutParams.WRAP_CONTENT, height: LayoutParams.WRAP_CONTENT)
     }
 }
@@ -208,9 +208,8 @@ open class JustFrameLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: LayoutParams
-                            = FrameLayoutParams.generateLayoutParams()) {
-        super.addView(view: view, params: params)
+    override public func addView(view: UIView, params: inout LayoutParams) {
+        super.addView(view: view, params: &params)
 
         view.uiViewExtension.layoutParams = params as! FrameLayoutParams
 
@@ -225,4 +224,9 @@ open class JustFrameLayout: JustViewGroup {
         addSubview(view)
     }
 
+    override public func addView(view: UIView) {
+        super.addView(view: view)
+        var params: LayoutParams = FrameLayoutParams.generateDefaultParams()
+        self.addView(view: view, params: &params)
+    }
 }
