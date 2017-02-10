@@ -165,15 +165,15 @@ class ViewController: UIViewController {
         var lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
 
         var view1 = createSectionLabel("FFFFFFFFFFF__________")
-        var view2 = createSectionLabel("FFFFFFFFFFF__________")
+        var view2 = createSectionLabel("__________")
 
         var params = RelativeLayoutParams.generateDefaultParams()
 
-        params.rightOf(view1)
+        params.leftOf(view2)
 
-        lfkdsk.addView(view: view1)
+        lfkdsk.addView(view: view1, params: &params)
 
-        lfkdsk.addView(view: view2, params: &params)
+        lfkdsk.addView(view: view2)
     }
 
     override func loadView() {

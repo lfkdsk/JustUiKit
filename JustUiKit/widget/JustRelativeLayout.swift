@@ -163,22 +163,24 @@ public class RelativeLayoutParams: MarginLayoutParams {
         super.init(width: width, height: height)
     }
 
+    private func initialList() {
+
+    }
+
     fileprivate func getRules() -> [BindViewWithRule] {
         return rules
     }
 
     public func addRule(rule: RelativeRule, view: UIView) {
-        var bind = rules[rule.getValue()]
-        bind.VIEW = view
-        bind.RULE = rule
-        bind.TYPE = .BIND
+        rules[rule.getValue()].VIEW = view
+        rules[rule.getValue()].RULE = rule
+        rules[rule.getValue()].TYPE = .BIND
         self.setAlignParentValue(rule, true)
     }
 
     public func addRule(rule: RelativeRule) {
-        var bind = rules[rule.getValue()]
-        bind.RULE = rule
-        bind.TYPE = .BIND
+        rules[rule.getValue()].RULE = rule
+        rules[rule.getValue()].TYPE = .BIND
         self.setAlignParentValue(rule, true)
     }
 
@@ -533,6 +535,10 @@ open class JustRelativeLayout: JustViewGroup {
             self.view = view
         }
 
+        init() {
+            // none init
+        }
+
         static func acquire(view: UIView) -> Node {
             var node: Node? = mPool.acquire()
             if node == nil {
@@ -587,17 +593,16 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         public func getSortedViews(rules: [RelativeRule]) -> [UIView] {
-            var sorted: [UIView] = []
             var roots: Queue<Node> = findRoots(rulesFilter: rules)
+            var sorted: [UIView] = []
 
             var index = 0
 
-            while let node = roots.dequeue(), isKind(of: Node.self) {
-                let view: UIView = node.view!
+            while let node: Node? = roots.dequeue(), node != nil {
+                let view: UIView = node!.view!
                 let key: InnerInteger = view.getViewId()
-                sorted[index] = view
-                index += 1
-                let dependents: NSMapTable<Node, DependencyGraph> = node.dependents
+                sorted.append(view)
+                let dependents: NSMapTable<Node, DependencyGraph> = node!.dependents
                 for dependent in dependents.keyEnumerator() {
                     let node = dependent as! Node
                     let dependencies = node.dependencies
@@ -628,12 +633,12 @@ open class JustRelativeLayout: JustViewGroup {
 
                 let rules = layoutParams.rules
 
-                let ruleCount = rules.count
+                let ruleCount = rulesFilter.count
 
                 for index in 0 ..< ruleCount {
                     let rule: BindViewWithRule = rules[rulesFilter[index].getValue()]
 
-                    if rule.RULE.getValue() > 0 {
+                    if rule.RULE.getValue() >= 0 {
                         let dependency = keyNodes.object(forKey: rule.VIEW?.getViewId())
 
                         if dependency == nil || dependency! == node {
@@ -660,7 +665,7 @@ open class JustRelativeLayout: JustViewGroup {
     }
 
     public func addView(view: UIView, params: inout RelativeLayoutParams) {
-        view.uiViewExtension.layoutParams = params as! RelativeLayoutParams
+        view.uiViewExtension.layoutParams = params
 
         if view.superview != nil {
             return
@@ -671,6 +676,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         addSubview(view)
+        view.setViewId(id: UIView.generateViewId())
     }
 
     override public func addView(view: UIView) {
