@@ -155,11 +155,11 @@ public class RelativeLayoutParams: MarginLayoutParams {
 
     public var alignWithParent: Bool = false
 
-    override init(_ source: LayoutParams) {
+    override public init(_ source: LayoutParams) {
         super.init(source)
     }
 
-    override init(width: CGFloat, height: CGFloat) {
+    override public init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
     }
 
@@ -290,16 +290,6 @@ open class JustRelativeLayout: JustViewGroup {
 
     private var mDirtyFresh = true
 
-    override init(frame groupFrame: CGRect) {
-        super.init(frame: groupFrame)
-    }
-    override init(frame groupFrame: CGRect, parentView: JustViewParent) {
-        super.init(frame: groupFrame, parentView: parentView)
-    }
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
     override public func onLayout(_ changed: Bool, _ top: CGFloat, _ left: CGFloat, _ right: CGFloat, _ bottom: CGFloat) {
         super.onLayout(changed, top, left, right, bottom)
 
@@ -326,7 +316,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         var views: [UIView] = mSortedHorizontalChildren
-        var count = views.count
+        let count = views.count
 
         var childSizes = [CGSize](repeating: CGSize(width: -1, height: -1), count: count)
 
@@ -669,9 +659,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: inout LayoutParams) {
-        super.addView(view: view, params: &params)
-
+    public func addView(view: UIView, params: inout RelativeLayoutParams) {
         view.uiViewExtension.layoutParams = params as! RelativeLayoutParams
 
         if view.superview != nil {
@@ -687,7 +675,7 @@ open class JustRelativeLayout: JustViewGroup {
 
     override public func addView(view: UIView) {
         super.addView(view: view)
-        var params: LayoutParams = RelativeLayoutParams.generateDefaultParams()
+        var params: RelativeLayoutParams = RelativeLayoutParams.generateDefaultParams()
         self.addView(view: view, params: &params)
     }
 }

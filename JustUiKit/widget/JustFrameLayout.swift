@@ -208,9 +208,7 @@ open class JustFrameLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: inout LayoutParams) {
-        super.addView(view: view, params: &params)
-
+    public func addView(view: UIView, params: inout FrameLayoutParams) {
         view.uiViewExtension.layoutParams = params as! FrameLayoutParams
 
         if view.superview != nil {
@@ -226,7 +224,7 @@ open class JustFrameLayout: JustViewGroup {
 
     override public func addView(view: UIView) {
         super.addView(view: view)
-        var params: LayoutParams = FrameLayoutParams.generateDefaultParams()
+        var params: FrameLayoutParams = FrameLayoutParams.generateDefaultParams()
         self.addView(view: view, params: &params)
     }
 }

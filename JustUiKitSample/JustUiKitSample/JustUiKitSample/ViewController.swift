@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
 
     func createSectionLabel(_ title: String) -> UILabel {
-        let sectionLabel = UILabel()
+        var sectionLabel = UILabel()
         sectionLabel.text = title;
         sectionLabel.font = UIFont.systemFont(ofSize: 17)
         sectionLabel.sizeToFit()
@@ -38,45 +38,45 @@ class ViewController: UIViewController {
         self.view = UIView(frame: UIScreen.main.bounds)
         view.backgroundColor = UIColor(rgb: 0xFF8C00)
 
-        let lfkdsk = JustLinearLayout(frame: UIScreen.main.bounds, orientation: .Horizontal)
+        var lfkdsk = JustLinearLayout(frame: UIScreen.main.bounds, orientation: .Horizontal)
 
         view.addSubview(lfkdsk)
 
-        let linearLayout: JustLinearLayout = lfkdsk
+        var linearLayout: JustLinearLayout = lfkdsk
 
-        let params: LinearLayoutParams = LinearLayoutParams(
+        var params: LinearLayoutParams = LinearLayoutParams(
                 width: LayoutParams.WRAP_CONTENT,
                 height: LayoutParams.WRAP_CONTENT)
         params.weight = 1
 //        params.leftMargin = 100
 //        params.rightMargin = 10
 
-        let fuckView = createSectionLabel("FUCK")
+        var fuckView = createSectionLabel("FUCK")
 
         print(fuckView.frame.origin)
         print(fuckView.frame.size)
 
         print("Before Layout")
 
-        let centerParams = LinearLayoutParams(linear: params)
+        var centerParams = LinearLayoutParams(linear: params)
 //        centerParams.weight = 1
         centerParams.layoutGravity = Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL
 
-        let rightParams = LinearLayoutParams(linear: params)
+        var rightParams = LinearLayoutParams(linear: params)
         rightParams.layoutGravity = Gravity.BOTTOM
 
-        let rightAndBottomParams = LinearLayoutParams(params)
+        var rightAndBottomParams = LinearLayoutParams(params)
 //        rightAndBottomParams.weight = 1
         rightAndBottomParams.layoutGravity = Gravity.BOTTOM | Gravity.RIGHT
 
-        let rightAndTopParams = LinearLayoutParams(linear: params)
+        var rightAndTopParams = LinearLayoutParams(linear: params)
 //        rightAndTopParams.rightMargin = 12
 //        rightAndTopParams.weight = 1
         rightAndTopParams.layoutGravity = Gravity.TOP | Gravity.RIGHT
 
-        linearLayout.addView(view: createSectionLabel("苟"), params: rightAndTopParams)
-        linearLayout.addView(view: createSectionLabel("利"), params: params)
-        linearLayout.addView(view: createSectionLabel("国"), params: params)
+        linearLayout.addView(view: createSectionLabel("苟"), params: &rightAndTopParams)
+        linearLayout.addView(view: createSectionLabel("利"), params: &params)
+        linearLayout.addView(view: createSectionLabel("国"), params: &params)
 //        linearLayout.addView(view: createSectionLabel("家"), params: centerParams)
 //        linearLayout.addView(view: createSectionLabel("生"), params: params)
 //        linearLayout.addView(view: createSectionLabel("死"), params: rightAndBottomParams)
@@ -95,18 +95,18 @@ class ViewController: UIViewController {
         Fuck2Params.weight = 1
         Fuck2Params.layoutGravity = Gravity.CENTER_VERTICAL
 //        fuck2View.setPadding(top: 10, left: 0, right: 10, bottom: 0)
-        lfkdsk.addView(view: fuck2View, params: Fuck2Params)
+        lfkdsk.addView(view: fuck2View, params: &Fuck2Params)
 
-        let firstInnerItem = createSectionLabel("以")
+        var firstInnerItem = createSectionLabel("以")
 //        rightAndTopParams.bottomMargin = 10
 
-        fuck2View.addView(view: firstInnerItem, params: params)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: params)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: params)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: params)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: rightParams)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: params)
-        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: centerParams)
+        fuck2View.addView(view: firstInnerItem, params: &params)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &params)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &params)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &params)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &rightParams)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &params)
+        fuck2View.addView(view: createSectionLabel("岂因祸福"), params: &centerParams)
 //        fuck2View.linearExtension.padding.paddingRight = 80
 
     }
@@ -115,45 +115,45 @@ class ViewController: UIViewController {
         self.view = JustFrameLayout(frame: UIScreen.main.bounds)
         view.backgroundColor = UIColor(rgb: 0xFF8C00)
 
-        let lfkdsk: JustFrameLayout = view as! JustFrameLayout
+        var lfkdsk: JustFrameLayout = view as! JustFrameLayout
 //        (view as! JustFrameLayout).addView(view: lfkdsk, params: FrameLayoutParams(width:
 //        LayoutParams.WRAP_CONTENT, height: LayoutParams.WRAP_CONTENT))
 
-        let params = FrameLayoutParams(width: LayoutParams.WRAP_CONTENT,
+        var params = FrameLayoutParams(width: LayoutParams.WRAP_CONTENT,
                 height: LayoutParams.WRAP_CONTENT)
 
-        let CENTER_V = FrameLayoutParams(source: params)
+        var CENTER_V = FrameLayoutParams(source: params)
         CENTER_V.layoutGravity = Gravity.CENTER_HORIZONTAL
 
-        let CENTER_H = FrameLayoutParams(source: params)
+        var CENTER_H = FrameLayoutParams(source: params)
         CENTER_H.layoutGravity = Gravity.CENTER_VERTICAL
 
-        let bottom_left = FrameLayoutParams(source: params)
+        var bottom_left = FrameLayoutParams(source: params)
         bottom_left.layoutGravity = Gravity.BOTTOM | Gravity.LEFT
 
-        let ver_right = FrameLayoutParams(source: params)
+        var ver_right = FrameLayoutParams(source: params)
         ver_right.layoutGravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT
 
-        let center = FrameLayoutParams(source: params)
+        var center = FrameLayoutParams(source: params)
         center.layoutGravity = Gravity.CENTER
 
-        lfkdsk.addView(view: createSectionLabel("FFFFFFFFFF"), params: CENTER_V)
-        lfkdsk.addView(view: createSectionLabel("ssssssss"), params: CENTER_H)
-        lfkdsk.addView(view: createSectionLabel("aaaaa"), params: bottom_left)
-        lfkdsk.addView(view: createSectionLabel("vvvv"), params: ver_right)
-        lfkdsk.addView(view: createSectionLabel("ssss"), params: center)
+        lfkdsk.addView(view: createSectionLabel("FFFFFFFFFF"), params: &CENTER_V)
+        lfkdsk.addView(view: createSectionLabel("ssssssss"), params: &CENTER_H)
+        lfkdsk.addView(view: createSectionLabel("aaaaa"), params: &bottom_left)
+        lfkdsk.addView(view: createSectionLabel("vvvv"), params: &ver_right)
+        lfkdsk.addView(view: createSectionLabel("ssss"), params: &center)
     }
 
     func loadRelativeLayout() {
         self.view = JustRelativeLayout(frame: UIScreen.main.bounds)
         view.backgroundColor = UIColor(rgb: 0xFF8C00)
 
-        let lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
+        var lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
 
-        let params = JustRelativeLayout(width: LayoutParams.WRAP_CONTENT,
+        var params = RelativeLayoutParams(width: LayoutParams.WRAP_CONTENT,
                 height: LayoutParams.WRAP_CONTENT)
 
-        let view1 = createSectionLabel("FFF")
+        var view1 = createSectionLabel("FFF")
 
 
     }
@@ -162,10 +162,18 @@ class ViewController: UIViewController {
         self.view = JustRelativeLayout(frame: UIScreen.main.bounds)
         view.backgroundColor = UIColor(rgb: 0xFF8C00)
 
-        let lfkdsk: JustFrameLayout = view as! JustFrameLayout
+        var lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
 
-        let view1 = createSectionLabel("FFFFFFFFFFF__________")
+        var view1 = createSectionLabel("FFFFFFFFFFF__________")
+        var view2 = createSectionLabel("FFFFFFFFFFF__________")
+
+        var params = RelativeLayoutParams.generateDefaultParams()
+
+        params.rightOf(view1)
+
         lfkdsk.addView(view: view1)
+
+        lfkdsk.addView(view: view2, params: &params)
     }
 
     override func loadView() {
