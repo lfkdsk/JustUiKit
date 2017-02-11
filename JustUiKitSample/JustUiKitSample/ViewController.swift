@@ -176,6 +176,8 @@ class ViewController: UIViewController {
         lfkdsk.addView(view: view1, params: params)
 
         lfkdsk.addView(view: view2)
+
+        lfkdsk.addView(view: view3)
     }
 
     override func loadView() {

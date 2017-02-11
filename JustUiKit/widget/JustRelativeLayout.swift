@@ -148,6 +148,8 @@ public class RelativeLayoutParams: MarginLayoutParams {
                     repeating: BindViewWithRule.generateDefaultBind(),
                     count: RelativeRule.VERB_COUNT)
 
+    public var layoutGravity: Gravity = Gravity.NO_GRAVITY
+
     public var mLeft: CGFloat = 0,
             mTop: CGFloat = 0,
             mRight: CGFloat = 0,
@@ -161,10 +163,6 @@ public class RelativeLayoutParams: MarginLayoutParams {
 
     override public init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
-    }
-
-    private func initialList() {
-
     }
 
     fileprivate func getRules() -> [BindViewWithRule] {
@@ -295,12 +293,21 @@ open class JustRelativeLayout: JustViewGroup {
     override public func onLayout(_ changed: Bool, _ top: CGFloat, _ left: CGFloat, _ right: CGFloat, _ bottom: CGFloat) {
         super.onLayout(changed, top, left, right, bottom)
 
-        let padding = uiViewExtension.padding
+        for (index, child) in subviews.enumerated() {
 
-        let pTop = top + padding.paddingTop,
-                pLeft = left + padding.paddingLeft,
-                pRight = right - padding.paddingRight,
-                pBottom = bottom - padding.paddingBottom
+            if child.isHidden {
+                continue
+            }
+
+            let params = child.uiViewExtension.layoutParams as! RelativeLayoutParams
+
+            child.frame = CGRect(
+                    x: params.mLeft,
+                    y: params.mTop,
+                    width: params.width,
+                    height: params.height)
+            child.layoutSubviews()
+        }
 
     }
 
@@ -308,6 +315,13 @@ open class JustRelativeLayout: JustViewGroup {
         super.onMeasure(size)
 
         let selfSize = uiViewExtension.padding.getMinSize(size: size)
+
+        let padding = uiViewExtension.padding
+
+        let pTop = frame.origin.y + padding.paddingTop,
+                pLeft = frame.origin.x + padding.paddingLeft,
+                pRight = pLeft + size.width - padding.paddingRight,
+                pBottom = pTop + size.height - padding.paddingBottom
 
         let height = selfSize.height
         let width = selfSize.width
@@ -318,9 +332,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         var views: [UIView] = mSortedHorizontalChildren
-        let count = views.count
-
-        var childSizes = [CGSize](repeating: CGSize(width: -1, height: -1), count: count)
+        var count = views.count
 
         for index in 0 ..< count {
             var child: UIView = views[index]
@@ -332,21 +344,89 @@ open class JustRelativeLayout: JustViewGroup {
             var params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
             var rules: [BindViewWithRule] = params.getRules()
 
-            applyHorizontalSizeRules(params: &params, width: width, rules: &rules)
-            measureChildHorizontal(view: &child, group: &childSizes[index], width: width, height: height)
+            applyHorizontalSizeRules(params: params, width: width, rules: &rules)
+            measureChildHorizontal(view: child, width: width, height: height)
+            positionHorizontalChildViews(child: child, left: pLeft, right: pRight)
+        }
 
-            applyVerticalSizeRules(params: &params, width: width, rules: &rules)
-            measureChildVertical(view: &child, group: &childSizes[index], width: width, height: height)
+        views = mSortedVerticalChildren
+        count = views.count
+
+        for index in 0 ..< count {
+            let child: UIView = views[index]
+
+            if child.isHidden {
+                continue
+            }
+
+            var params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
+            var rules: [BindViewWithRule] = params.getRules()
+
+            applyVerticalSizeRules(params: params, height: height, rules: &rules)
+            measureChildVertical(view: child, width: width, height: height)
+            positionVerticalChildViews(child: child, top: pTop, bottom: pBottom)
         }
     }
 
-    private func applyVerticalSizeRules(params: inout RelativeLayoutParams, width: CGFloat,
+    private func applyVerticalSizeRules(params childParams: RelativeLayoutParams, height: CGFloat,
                                         rules: inout [BindViewWithRule]) {
+        func hasBindView(rule: RelativeRule) -> Bool {
+            let ruleValue: BindViewWithRule = rules[rule.getValue()]
+            return ruleValue.VIEW != nil && ruleValue.TYPE == BindType.BIND
+        }
 
+        var anchorParams: RelativeLayoutParams?
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .ABOVE)
+
+        if anchorParams != nil {
+            childParams.mBottom = anchorParams!.mTop - CGFloat(anchorParams!.topMargin +
+                    childParams.bottomMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .ABOVE) {
+            if (height >= 0) {
+                childParams.mBottom = height - CGFloat(childParams.bottomMargin)
+            }
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .BELOW)
+
+        if anchorParams != nil {
+            childParams.mTop = anchorParams!.mBottom + CGFloat(anchorParams!.bottomMargin +
+                    childParams.topMargin);
+        } else if childParams.alignWithParent && hasBindView(rule: .BELOW) {
+            childParams.mTop = CGFloat(childParams.topMargin)
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_TOP)
+
+        if anchorParams != nil {
+            childParams.mTop = anchorParams!.mTop + CGFloat(childParams.topMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .ALIGN_TOP) {
+            childParams.mTop = CGFloat(childParams.topMargin)
+        }
+
+        anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_BOTTOM)
+
+        if anchorParams != nil {
+            childParams.mBottom = anchorParams!.mBottom - CGFloat(childParams.bottomMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .ALIGN_BOTTOM) {
+            if (height >= 0) {
+                childParams.mBottom = height - CGFloat(childParams.bottomMargin)
+            }
+        }
+
+        if hasBindView(rule: .ALIGN_PARENT_TOP) {
+            childParams.mTop = CGFloat(childParams.topMargin)
+        }
+
+        if hasBindView(rule: .ALIGN_PARENT_BOTTOM) {
+            if (height >= 0) {
+                childParams.mBottom = height - CGFloat(childParams.bottomMargin)
+            }
+        }
     }
 
-    private func measureChildVertical(view: inout UIView,
-                                      group: inout CGSize,
+    private func measureChildVertical(view: UIView,
                                       width: CGFloat,
                                       height: CGFloat) {
         var childWidth: CGFloat = 0
@@ -368,11 +448,10 @@ open class JustRelativeLayout: JustViewGroup {
 
         childWidth = min(childWidth, width)
 
-        group.width = childWidth
+        params.width = childWidth
     }
 
-    private func measureChildHorizontal(view: inout UIView,
-                                        group: inout CGSize,
+    private func measureChildHorizontal(view: UIView,
                                         width: CGFloat,
                                         height: CGFloat) {
         let params: RelativeLayoutParams = view.uiViewExtension.layoutParams as! RelativeLayoutParams
@@ -393,17 +472,58 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         childHeight = min(childHeight, height)
-        group.height = childHeight
+        params.height = childHeight
 
         if childSize.height == childHeight {
-            group.width = childSize.width
+            params.width = childSize.width
         }
+    }
+
+    public func positionVerticalChildViews(child: UIView,
+                                           top: CGFloat,
+                                           bottom: CGFloat) {
+
+        let childParams: RelativeLayoutParams = child.uiViewExtension.layoutParams as! RelativeLayoutParams
+        let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
+
+        let childHeight = childParams.height
+
+        switch verticalGravity {
+        case Gravity.CENTER_VERTICAL.getValue():
+            childParams.mTop = (bottom - top - childHeight) / 2
+            childParams.mTop += CGFloat(childParams.topMargin - childParams.bottomMargin)
+        case Gravity.BOTTOM.getValue():
+            childParams.mTop = bottom - top - childHeight
+        default:
+            childParams.mTop = top + CGFloat(childParams.topMargin)
+        }
+        childParams.mBottom = childParams.mTop + childParams.height
+    }
+
+    public func positionHorizontalChildViews(child: UIView,
+                                             left: CGFloat,
+                                             right: CGFloat) {
+
+        let childParams: RelativeLayoutParams = child.uiViewExtension.layoutParams as! RelativeLayoutParams
+        let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
+        let childWidth = childParams.width
+        switch horizontalGravity {
+        case Gravity.CENTER_HORIZONTAL.getValue():
+            childParams.mLeft = (right - left - childWidth) / 2 + left
+            childParams.mLeft += (CGFloat(childParams.leftMargin - childParams.rightMargin))
+        case Gravity.RIGHT.getValue():
+            childParams.mLeft = right - left - childWidth - CGFloat(childParams.rightMargin)
+        default:
+            childParams.mLeft = left + CGFloat(childParams.leftMargin)
+        }
+
+        childParams.mRight = childParams.mLeft + childParams.width
     }
 
     ///
     /// horizontal rules
     ///
-    private func applyHorizontalSizeRules(params: inout RelativeLayoutParams, width: CGFloat,
+    private func applyHorizontalSizeRules(params childParams: RelativeLayoutParams, width: CGFloat,
                                           rules: inout [BindViewWithRule]) {
 
         func hasBindView(rule: RelativeRule) -> Bool {
@@ -414,52 +534,52 @@ open class JustRelativeLayout: JustViewGroup {
         var anchorParams: RelativeLayoutParams?
 
         // min
-        params.mLeft = CGFloat(Int.min)
-        params.mRight = CGFloat(Int.min)
+        childParams.mLeft = CGFloat(Int.min)
+        childParams.mRight = CGFloat(Int.min)
 
         // get the view left of current View
         anchorParams = getRelatedViewParams(rules: &rules, relation: .LEFT_OF)
 
         if anchorParams != nil {
-            params.mRight = anchorParams!.mLeft
+            childParams.mRight = anchorParams!.mLeft
                     - CGFloat(anchorParams!.leftMargin + anchorParams!.rightMargin)
-        } else if params.alignWithParent && hasBindView(rule: .LEFT_OF) {
+        } else if childParams.alignWithParent && hasBindView(rule: .LEFT_OF) {
             if width >= 0 {
-                params.mRight = width - CGFloat(params.rightMargin)
+                childParams.mRight = width - CGFloat(childParams.rightMargin)
             }
         }
 
         anchorParams = getRelatedViewParams(rules: &rules, relation: .RIGHT_OF)
 
         if anchorParams != nil {
-            params.mLeft = anchorParams!.mRight + CGFloat(anchorParams!.leftMargin + anchorParams!.rightMargin)
-        } else if params.alignWithParent && hasBindView(rule: .RIGHT_OF) {
-            params.mLeft = CGFloat(params.leftMargin)
+            childParams.mLeft = anchorParams!.mRight + CGFloat(anchorParams!.leftMargin + anchorParams!.rightMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .RIGHT_OF) {
+            childParams.mLeft = CGFloat(childParams.leftMargin)
         }
 
         anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_LEFT)
         if anchorParams != nil {
-            params.mLeft = anchorParams!.mLeft + CGFloat(params.leftMargin)
-        } else if params.alignWithParent && hasBindView(rule: .ALIGN_LEFT) {
-            params.mLeft = CGFloat(params.leftMargin)
+            childParams.mLeft = anchorParams!.mLeft + CGFloat(childParams.leftMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .ALIGN_LEFT) {
+            childParams.mLeft = CGFloat(childParams.leftMargin)
         }
 
         anchorParams = getRelatedViewParams(rules: &rules, relation: .ALIGN_RIGHT);
         if (anchorParams != nil) {
-            params.mRight = anchorParams!.mRight - CGFloat(params.rightMargin)
-        } else if params.alignWithParent && hasBindView(rule: .ALIGN_RIGHT) {
+            childParams.mRight = anchorParams!.mRight - CGFloat(childParams.rightMargin)
+        } else if childParams.alignWithParent && hasBindView(rule: .ALIGN_RIGHT) {
             if (width >= 0) {
-                params.mRight = width - CGFloat(params.rightMargin)
+                childParams.mRight = width - CGFloat(childParams.rightMargin)
             }
         }
 
         if hasBindView(rule: .ALIGN_PARENT_LEFT) {
-            params.mLeft = CGFloat(params.leftMargin)
+            childParams.mLeft = CGFloat(childParams.leftMargin)
         }
 
         if hasBindView(rule: .ALIGN_PARENT_RIGHT) {
             if (width >= 0) {
-                params.mRight = width - CGFloat(params.rightMargin)
+                childParams.mRight = width - CGFloat(childParams.rightMargin)
             }
         }
     }
@@ -596,8 +716,6 @@ open class JustRelativeLayout: JustViewGroup {
             var roots: Queue<Node> = findRoots(rulesFilter: rules)
             var sorted: [UIView] = []
 
-            var index = 0
-
             while let node: Node? = roots.dequeue(), node != nil {
                 let view: UIView = node!.view!
                 let key: InnerInteger = view.getViewId()
@@ -664,7 +782,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
     }
 
-    public func addView(view: UIView, params: RelativeLayoutParams) {
+    public func addView(view: UIView, params: RelativeLayoutParams = RelativeLayoutParams.generateDefaultParams()) {
         view.uiViewExtension.layoutParams = params
 
         if view.superview != nil {
@@ -681,7 +799,6 @@ open class JustRelativeLayout: JustViewGroup {
 
     override public func addView(view: UIView) {
         super.addView(view: view)
-        var params: RelativeLayoutParams = RelativeLayoutParams.generateDefaultParams()
-        self.addView(view: view, params: params)
+        self.addView(view: view, params: RelativeLayoutParams.generateDefaultParams())
     }
 }
