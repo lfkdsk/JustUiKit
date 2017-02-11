@@ -664,7 +664,7 @@ open class JustRelativeLayout: JustViewGroup {
         }
     }
 
-    public func addView(view: UIView, params: inout RelativeLayoutParams) {
+    public func addView(view: UIView, params: RelativeLayoutParams) {
         view.uiViewExtension.layoutParams = params
 
         if view.superview != nil {
@@ -682,6 +682,6 @@ open class JustRelativeLayout: JustViewGroup {
     override public func addView(view: UIView) {
         super.addView(view: view)
         var params: RelativeLayoutParams = RelativeLayoutParams.generateDefaultParams()
-        self.addView(view: view, params: &params)
+        self.addView(view: view, params: params)
     }
 }
