@@ -6,7 +6,7 @@ JustUiKit是一套Android样式工具iOS UI套件。 JustUiKit包含JustLinearLa
 [![](https://img.shields.io/badge/support-iOS8%2B-green.svg)](https://github.com/lfkdsk/JustUiKit)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JustUiKit.svg?style=flat-square)](https://cocoapods.org/pods/JustUiKit)
 
-## 如何安装?
+## 如何使用?
 
 * 拷贝代码
 
@@ -114,7 +114,66 @@ parentView.addView(createView(rgb:0x89A49D), c_r)
 parentView.addView(createView(rgb:0x877B6B), params)
 ```
 
+### JustRelativeLayout 
+一个布局，其中子节点的位置可以相对于彼此或相对于父节点来描述。
 
+请注意，您不能在RelativeLayout的大小和其子项的位置之间具有循环依赖关系。 例如，您不能具有高度设置为WRAP_CONTENT的RelativeLayout和设置为ALIGN_PARENT_BOTTOM的子级。
+
+![relative](art/relativelayout1.png)
+
+在RelativeLayout中，您可以使用所有边距，填充和重力。 此外，您可以使用一些对齐功能。 例如，如果视图是alignLeftTo，则其左边缘将被设置为等于锚视图。 您可以使用一组函数，如leftOf，rightOf，bottomOf将当前视图设置到锚视图的左侧。
+
+``` swift
+// view1 view2 view3 view4 view5
+let params = RelativeLayoutParams.generateDefaultParams()
+let params1 = RelativeLayoutParams(params)
+params1.centerInHorizontal()
+let params2 = RelativeLayoutParams(params)
+params2.bottomTo(view4)
+params2.topMargin = xxx
+let params3 = RelativeLayoutParams(params)
+param3.alignRightTo(view1)
+let params4 = RelativeLayoutParams(params)
+params4.centerInParent()
+let params5 = RelativeLayoutParams(params)
+params5.alignParentBottom()
+// add view to parent
+```
+
+#### RelativeLayout中的约束
+
+| Constants           | Description                            |
+| ------------------- | -------------------------------------- |
+| ABOVE               | 将孩子的底部边缘与另一个孩子的顶部边缘对齐的规则。              |
+| ALIGN_BASELINE      | 将子项的基准与另一个子项的基准对齐的规则。                  |
+| ALIGN_BOTTOM        | 将儿童的底部边缘与另一个儿童的底部边缘对齐的规则。              |
+| ALIGN_LEFT          | 将儿童的左边缘与另一个儿童的左边缘对齐的规则。                |
+| ALIGN_PARENT_BOTTOM | 将子元素的底边与其RelativeLayout父元素的底边对齐的规则。    |
+| ALIGN_PARENT_LEFT   | 将子对象的左边缘与其RelativeLayout父对象的左边缘对齐的规则。  |
+| ALIGN_PARENT_RIGHT  | 将子对象的右边缘与其RelativeLayout父对象的右边缘对齐的规则。  |
+| ALIGN_PARENT_TOP    | 将子对象的顶边与其RelativeLayout父对象的顶边对齐的规则。    |
+| ALIGN_RIGHT         | 将孩子的右边缘与另一个孩子的右边缘对齐的规则。                |
+| ALIGN_TOP           | 将儿童的顶部边缘与另一个儿童的顶部边缘对齐的规则。              |
+| BELOW               | 将儿童的顶部边缘与另一个儿童的底部边缘对齐的规则。              |
+| CENTER_HORIZONTAL   | 将子元素相对于其RelativeLayout父元素的边界进行水平居中的规则。 |
+| CENTER_IN_PARENT    | 使子对象相对于其RelativeLayout父对象的边界居中的规则。     |
+| CENTER_VERTICAL     | 将子元素相对于其RelativeLayout父元素的边界垂直居中的规则。   |
+| END_OF              | 将孩子的起始边缘与另一个孩子的边缘对齐的规则。                |
+| LEFT_OF             | 将儿童的右边缘与另一个儿童的左边缘对齐的规则。                |
+| RIGHT_OF            | 将儿童的左边缘与另一个儿童的右边缘对齐的规则。                |
+
+## Gravity
+
+必须是以下常量值中的一个或多个（由“|”分隔）。
+
+| Constant          | Value | Description                  |
+| :---------------- | ----- | ---------------------------- |
+| 顶部                | 0x30  | 将对象推送到其容器的顶部，而不更改其大小。        |
+| 底部                | 0x50  | 将对象推送到其容器的底部，而不更改其大小。        |
+| 右                 | 0x05  | 将对象推送到其容器的右侧，而不更改其大小。        |
+| center_vertical   | 0x10  | 将对象放置在其容器的垂直中心，而不是更改其大小。     |
+| center_horizontal | 0x01  | 将对象放置在其容器的水平中心，而不改变其大小。      |
+| 中心                | 0x11  | 将对象放置在其容器的垂直和水平轴的中心，而不改变其大小。 |
 
 
 ## Feedback

@@ -264,14 +264,17 @@ public class RelativeLayoutParams: MarginLayoutParams {
 
     public func centerInParent() {
         addRule(rule: .CENTER_IN_PARENT)
+        layoutGravity = layoutGravity | Gravity.CENTER
     }
 
     public func centerInHorizontal() {
         addRule(rule: .CENTER_HORIZONTAL)
+        layoutGravity = layoutGravity | Gravity.CENTER_VERTICAL
     }
 
     public func centerInVertical() {
         addRule(rule: .CENTER_VERTICAL)
+        layoutGravity = layoutGravity | Gravity.CENTER_HORIZONTAL
     }
 
     public static func generateDefaultParams() -> RelativeLayoutParams {
