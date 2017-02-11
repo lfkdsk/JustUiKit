@@ -777,7 +777,9 @@ open class JustRelativeLayout: JustViewGroup {
             var roots: Queue<Node> = findRoots(rulesFilter: rules)
             var sorted: [UIView] = []
 
-            while let node: Node? = roots.dequeue(), node != nil {
+            var node: Node? = roots.dequeue()
+
+            while node != nil {
                 let view: UIView = node!.view!
                 let key: InnerInteger = view.getViewId()
                 sorted.append(view)
@@ -790,6 +792,9 @@ open class JustRelativeLayout: JustViewGroup {
                         roots.enqueue(node)
                     }
                 }
+
+                // update node
+                node = roots.dequeue()
             }
 
             return sorted
