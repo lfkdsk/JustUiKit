@@ -22,7 +22,7 @@ JustUiKit是一套Android样式工具iOS UI套件。 JustUiKit包含JustLinearLa
 
   ```ruby
   platform :ios, '8.0'
-  pod 'JustUiKit', '~> 0.1.4'
+  pod 'JustUiKit', '~> 0.2.1'
   ```
 
   之后运行如下命令:

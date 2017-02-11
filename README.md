@@ -24,7 +24,7 @@ iOS UI Kit With Android-Style Tools. JustUiKit contains `JustLinearLayout`, `Jus
 
   ``` ruby
   platform :ios, '8.0'
-  pod 'JustUiKit', '~> 0.1.5'
+  pod 'JustUiKit', '~> 0.2.1'
   ```
 
   ​Then, run the following command:
