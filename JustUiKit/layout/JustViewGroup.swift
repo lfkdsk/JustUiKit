@@ -90,16 +90,15 @@ open class JustViewGroup: UIView, JustViewParent, JustViewManager {
         return parentView != nil
     }
 
-
-    public func addView(view: UIView, params: LayoutParams) {
-
-    }
-
     public func updateView(view: UIView, params: LayoutParams) {
 
     }
 
     public func removeView(view: UIView) {
 //        self.willRemoveSubview(view)
+    }
+
+    public func addView(view: UIView) {
+
     }
 }

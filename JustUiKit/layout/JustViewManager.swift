@@ -25,8 +25,7 @@ import UIKit
 
 public protocol JustViewManager {
 
-    func addView(view: UIView,
-                 params: LayoutParams)
+    func addView(view: UIView)
 
     func updateView(view: UIView,
                     params: LayoutParams)

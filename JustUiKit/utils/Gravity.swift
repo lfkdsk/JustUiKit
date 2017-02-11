@@ -21,25 +21,47 @@
 ///    SOFTWARE.
 
 
-public enum Gravity: Int {
+public class Gravity {
     static let VERTICAL_GRAVITY_MASK = 112
     static let HORIZONTAL_GRAVITY_MASK = 7
 
-    case NO_GRAVITY = 0
-    case TOP = 48
-    case BOTTOM = 80
-    case LEFT = 3
-    case RIGHT = 5
-    case CENTER_VERTICAL = 16
-    case CENTER_HORIZONTAL = 1
-    case CENTER = 17
+    private static let NO_GRAVITY_V = 0
+    private static let TOP_V = 48
+    private static let BOTTOM_V = 80
+    private static let LEFT_V = 3
+    private static let RIGHT_V = 5
+    private static let CENTER_VERTICAL_V = 16
+    private static let CENTER_HORIZONTAL_V = 1
+    private static let CENTER_V = 17
 
-    public static func |(left: Gravity, right: Gravity) -> Int {
-        return left.getValue() | right.getValue()
+    public static let NO_GRAVITY = Gravity(value: NO_GRAVITY_V)
+    public static let TOP = Gravity(value: TOP_V)
+    public static let BOTTOM = Gravity(value: BOTTOM_V)
+    public static let LEFT = Gravity(value: LEFT_V)
+    public static let RIGHT = Gravity(value: RIGHT_V)
+    public static let CENTER_VERTICAL = Gravity(value: CENTER_VERTICAL_V)
+    public static let CENTER_HORIZONTAL = Gravity(value: CENTER_HORIZONTAL_V)
+    public static let CENTER = Gravity(value: CENTER_V)
+
+    private let innerValue: Int
+
+    private init(value: Int) {
+        self.innerValue = value
+    }
+
+    public static func |(left: Gravity, right: Gravity) -> Gravity {
+        return Gravity(value: left.getValue() | right.getValue())
+    }
+
+    public static func getHorizontalGravity(gravity: Gravity) -> Int {
+        return gravity.getValue() & HORIZONTAL_GRAVITY_MASK
+    }
+
+    public static func getVerticalGravity(gravity: Gravity) -> Int {
+        return gravity.getValue() & VERTICAL_GRAVITY_MASK
     }
 
     public func getValue() -> Int {
-        return rawValue
+        return innerValue
     }
-
 }

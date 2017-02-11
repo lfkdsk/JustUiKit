@@ -62,7 +62,6 @@ public struct Padding {
 public struct UIViewExtension {
     public var padding: Padding
     internal var layoutParams: LayoutParams
-
     internal init(padding: Padding, params: LayoutParams) {
         self.padding = padding
         self.layoutParams = params
@@ -71,6 +70,11 @@ public struct UIViewExtension {
     internal init() {
         self.padding = Padding()
         self.layoutParams = LayoutParams.generateDefaultLayoutParams()
+    }
+    
+    public mutating func setLayoutParams(params: LayoutParams) {
+        params.bindWith(view:layoutParams.bindView)
+        self.layoutParams = params
     }
 }
 
@@ -107,5 +111,61 @@ extension UIView: ExtensionParams {
 
     public func setPadding(top: CGFloat, left: CGFloat, right: CGFloat, bottom: CGFloat) {
         self.uiViewExtension.padding = Padding(top: top, left: left, right: right, bottom: bottom)
+    }
+}
+
+extension UIView {
+
+    private struct IdKey {
+        static var ExtensionKey = "IdExtensionKey"
+    }
+
+    private static var atomicInteger = 1
+
+    public class InnerInteger {
+        let viewId: Int
+
+        init(_ id: Int) {
+            viewId = id
+        }
+
+        public static func ==(_ a: InnerInteger, _ b: InnerInteger) -> Bool {
+            if a.viewId == b.viewId {
+                return true
+            }
+            return false
+        }
+    }
+
+    private var viewId: InnerInteger {
+        set {
+            objc_setAssociatedObject(self, &IdKey.ExtensionKey,
+                    newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+
+        get {
+            if let el = objc_getAssociatedObject(self, &IdKey.ExtensionKey) as? InnerInteger {
+                return el
+            }
+            let el = InnerInteger(-1)
+            objc_setAssociatedObject(self, &IdKey.ExtensionKey,
+                    el, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return el
+        }
+    }
+
+    public static func generateViewId() -> Int {
+        objc_sync_enter(atomicInteger)
+        atomicInteger += 1
+        objc_sync_exit(atomicInteger)
+        return Int(atomicInteger)
+    }
+
+    public func setViewId(id: Int) {
+        viewId = InnerInteger(id)
+    }
+
+    public func getViewId() -> InnerInteger {
+        return viewId
     }
 }

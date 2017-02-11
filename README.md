@@ -6,6 +6,8 @@ iOS UI Kit With Android-Style Tools. JustUiKit contains `JustLinearLayout`, `Jus
 [![](https://img.shields.io/badge/support-iOS8%2B-green.svg)](https://github.com/lfkdsk/JustUiKit)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JustUiKit.svg?style=flat-square)](https://cocoapods.org/pods/JustUiKit)
 
+[中文请参阅](README_ZH.md)
+
 ## How To Install?
 
 * Copy to your project
@@ -70,8 +72,6 @@ paddingParams.paddingTop = 10
 parentView.addView(createView(), params)
 parentView.addView(createView(), paddingParams)
 ```
-
-
 
 ### JustFrameLayout
 

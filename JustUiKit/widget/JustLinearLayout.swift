@@ -23,19 +23,19 @@
 import UIKit
 
 public class LinearLayoutParams: MarginLayoutParams {
-    var weight: CGFloat = 0
-    var layoutGravity: Int = Gravity.NO_GRAVITY.rawValue
-    var minHeight: CGFloat = 0
-    var minWidth: CGFloat = 0
-    var maxHeight: CGFloat = CGFloat.greatestFiniteMagnitude
-    var maxWidth: CGFloat = CGFloat.greatestFiniteMagnitude
+    public var weight: CGFloat = 0
+    public var layoutGravity: Gravity = Gravity.NO_GRAVITY
+    public var minHeight: CGFloat = 0
+    public var minWidth: CGFloat = 0
+    public var maxHeight: CGFloat = CGFloat.greatestFiniteMagnitude
+    public var maxWidth: CGFloat = CGFloat.greatestFiniteMagnitude
 
     override public init(width: CGFloat, height: CGFloat) {
         super.init(width: width, height: height)
-        self.layoutGravity = Gravity.NO_GRAVITY.rawValue
+        self.layoutGravity = Gravity.NO_GRAVITY
     }
 
-    public init(width: CGFloat, height: CGFloat, layoutGravity: Int) {
+    public init(width: CGFloat, height: CGFloat, layoutGravity: Gravity) {
         super.init(width: width, height: height)
         self.layoutGravity = layoutGravity
     }
@@ -56,6 +56,11 @@ public class LinearLayoutParams: MarginLayoutParams {
 
     override public init(_ params: LayoutParams) {
         super.init(params)
+    }
+
+    public static func generateDefaultParams() -> LinearLayoutParams {
+        return LinearLayoutParams(width: LayoutParams.WRAP_CONTENT,
+                height: LayoutParams.WRAP_CONTENT)
     }
 }
 
@@ -103,7 +108,7 @@ private struct BindViewWithRect {
 }
 
 open class JustLinearLayout: JustViewGroup {
-    private var marginFlag: Int = Gravity.TOP | Gravity.LEFT
+    private var marginFlag: Gravity = Gravity.TOP | Gravity.LEFT
 
     private var currentChildLayoutTop: CGFloat = 0.0
     private var currentChildLayoutLeft: CGFloat = 0.0
@@ -405,7 +410,7 @@ open class JustLinearLayout: JustViewGroup {
 //            }
             childTop = currentChildLayoutTop + CGFloat(childParams.topMargin)
 
-            let horizontalGravity = childParams.layoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK
+            let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
 
             switch horizontalGravity {
             case Gravity.CENTER_HORIZONTAL.getValue():
@@ -529,7 +534,7 @@ open class JustLinearLayout: JustViewGroup {
 
             childLeft = currentChildLayoutLeft + CGFloat(childParams.leftMargin)
 
-            let verticalGravity = childParams.layoutGravity & Gravity.VERTICAL_GRAVITY_MASK
+            let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
 
             switch verticalGravity {
             case Gravity.CENTER_VERTICAL.getValue():
@@ -631,10 +636,8 @@ open class JustLinearLayout: JustViewGroup {
         }
     }
 
-    override public func addView(view: UIView, params: LayoutParams) {
-        super.addView(view: view, params: params)
-
-        view.uiViewExtension.layoutParams = params as! LinearLayoutParams
+    public func addView(view: UIView, params: LinearLayoutParams = LinearLayoutParams.generateDefaultParams()) {
+        view.uiViewExtension.layoutParams = params
 
         if view.superview != nil {
             return
@@ -645,6 +648,12 @@ open class JustLinearLayout: JustViewGroup {
         }
 
         addSubview(view)
+        params.bindWith(view: view)
+    }
+
+    override public func addView(view: UIView) {
+        super.addView(view: view)
+        self.addView(view: view, params: LinearLayoutParams.generateDefaultParams())
     }
 
 }

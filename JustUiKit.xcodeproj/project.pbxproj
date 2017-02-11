@@ -11,6 +11,7 @@
 		1F4A50DF28D4F4DB7E48B1F5 /* JustFrameLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5242F547BDDE9E85737F /* JustFrameLayout.swift */; };
 		1F4A52920CBEDAC4E8EBB468 /* JustExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A53BFD8C6BC0B089C3A33 /* JustExtensionView.swift */; };
 		1F4A5478A2C2D99BD50069AC /* JustLinearLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5551A35FC077DE6B5B2F /* JustLinearLayout.swift */; };
+		1F4A56BE01BB7181D793C388 /* ReleasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5D2DDC60FD033F813BE6 /* ReleasePool.swift */; };
 		1F4A571634F8208E3BE1671F /* JustUiKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F4A505755AC835F3762D3A3 /* JustUiKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F4A57D0DE7EA6295AB293D2 /* JustViewParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5456678972DE25244C98 /* JustViewParent.swift */; };
 		1F4A57E10237CAEE95A4650E /* Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5F9AF4A2DC76D4825118 /* Orientation.swift */; };
@@ -20,7 +21,9 @@
 		1F4A59E2B441CBC469D1081D /* JustViewGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5511BC326869D730F08C /* JustViewGroup.swift */; };
 		1F4A5BDA99E2B314D8F00C94 /* JustUiKit.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 1F4A5C468AA857CCB949BFEC /* JustUiKit.podspec */; };
 		1F4A5C1CD4E1B9684E62A2A1 /* .swift-version in Resources */ = {isa = PBXBuildFile; fileRef = 1F4A59ACE48077F39440C6CC /* .swift-version */; };
+		1F4A5CC393D38237C20F73B3 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A538A84DAF817FE7AABA2 /* Queue.swift */; };
 		1F4A5D248CDEBE9F7C9D87B3 /* Gravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4A5A9ACB27277D696F9F49 /* Gravity.swift */; };
+		529896541E374C1B00CA01B9 /* JustRelativeLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529896531E374C1B00CA01B9 /* JustRelativeLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,7 @@
 		1F4A51215B79447FBF05FD4E /* JustViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustViewManager.swift; sourceTree = "<group>"; };
 		1F4A5242F547BDDE9E85737F /* JustFrameLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustFrameLayout.swift; sourceTree = "<group>"; };
 		1F4A536A1248643E93F8A2CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		1F4A538A84DAF817FE7AABA2 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		1F4A53BFD8C6BC0B089C3A33 /* JustExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustExtensionView.swift; sourceTree = "<group>"; };
 		1F4A5456678972DE25244C98 /* JustViewParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustViewParent.swift; sourceTree = "<group>"; };
 		1F4A5511BC326869D730F08C /* JustViewGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustViewGroup.swift; sourceTree = "<group>"; };
@@ -47,8 +51,10 @@
 		1F4A5A9ACB27277D696F9F49 /* Gravity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gravity.swift; sourceTree = "<group>"; };
 		1F4A5AD76626AC9CFB1358EF /* JustLayoutParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustLayoutParams.swift; sourceTree = "<group>"; };
 		1F4A5C468AA857CCB949BFEC /* JustUiKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = JustUiKit.podspec; sourceTree = "<group>"; };
-		1F4A5CDF86E50054A533AFF8 /* JustUiKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = JustUiKitTests.xctest; path = "/Users/liufengkai/Documents/iOSProject/Project/JustUiKit/build/Debug-iphoneos/JustUiKitTests.xctest"; sourceTree = "<absolute>"; };
+		1F4A5D2DDC60FD033F813BE6 /* ReleasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleasePool.swift; sourceTree = "<group>"; };
 		1F4A5F9AF4A2DC76D4825118 /* Orientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orientation.swift; sourceTree = "<group>"; };
+		529896521E374C0E00CA01B9 /* JustUiKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JustUiKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		529896531E374C1B00CA01B9 /* JustRelativeLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustRelativeLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +81,8 @@
 				1F4A5A9ACB27277D696F9F49 /* Gravity.swift */,
 				1F4A5F9AF4A2DC76D4825118 /* Orientation.swift */,
 				1F4A505849AD0FC368329099 /* ColorExtension.swift */,
+				1F4A538A84DAF817FE7AABA2 /* Queue.swift */,
+				1F4A5D2DDC60FD033F813BE6 /* ReleasePool.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -97,6 +105,7 @@
 				1F4A59ACE48077F39440C6CC /* .swift-version */,
 				1F4A5C468AA857CCB949BFEC /* JustUiKit.podspec */,
 				5241B5D31E2F906A00F96976 /* Frameworks */,
+				529896521E374C0E00CA01B9 /* JustUiKitTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -116,6 +125,7 @@
 		1F4A5CA795838BC2E7696DD9 /* widget */ = {
 			isa = PBXGroup;
 			children = (
+				529896531E374C1B00CA01B9 /* JustRelativeLayout.swift */,
 				1F4A5551A35FC077DE6B5B2F /* JustLinearLayout.swift */,
 				1F4A5242F547BDDE9E85737F /* JustFrameLayout.swift */,
 			);
@@ -166,7 +176,7 @@
 			);
 			name = JustUiKitTests;
 			productName = JustUiKitTests;
-			productReference = 1F4A5CDF86E50054A533AFF8 /* JustUiKitTests.xctest */;
+			productReference = 529896521E374C0E00CA01B9 /* JustUiKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1F4A5E9B5B37635B5E156071 /* JustUiKit */ = {
@@ -251,11 +261,14 @@
 				1F4A5944BBC556272F2CC3A8 /* ColorExtension.swift in Sources */,
 				1F4A5478A2C2D99BD50069AC /* JustLinearLayout.swift in Sources */,
 				1F4A59E2B441CBC469D1081D /* JustViewGroup.swift in Sources */,
+				529896541E374C1B00CA01B9 /* JustRelativeLayout.swift in Sources */,
 				1F4A57D0DE7EA6295AB293D2 /* JustViewParent.swift in Sources */,
 				1F4A5989D9FC754C62434510 /* JustViewManager.swift in Sources */,
 				1F4A52920CBEDAC4E8EBB468 /* JustExtensionView.swift in Sources */,
 				1F4A59B149573A55F70F2B95 /* JustLayoutParams.swift in Sources */,
 				1F4A50DF28D4F4DB7E48B1F5 /* JustFrameLayout.swift in Sources */,
+				1F4A5CC393D38237C20F73B3 /* Queue.swift in Sources */,
+				1F4A56BE01BB7181D793C388 /* ReleasePool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +366,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/** \"${PROJECT_DIR}/JustUiKitSample\"/**";
 			};
 			name = Debug;
 		};
@@ -425,7 +438,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/JustUiKitTest\"/** \"${PROJECT_DIR}/JustUiKitSample\"/**";
 			};
 			name = Release;
 		};
