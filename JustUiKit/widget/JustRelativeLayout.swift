@@ -150,10 +150,12 @@ public class RelativeLayoutParams: MarginLayoutParams {
 
     public var layoutGravity: Gravity = Gravity.NO_GRAVITY
 
-    public var mLeft: CGFloat = 0,
-            mTop: CGFloat = 0,
-            mRight: CGFloat = 0,
-            mBottom: CGFloat = 0
+    public static let VALUE_NOT_SET: CGFloat = -1
+
+    public var mLeft: CGFloat = VALUE_NOT_SET,
+            mTop: CGFloat = VALUE_NOT_SET,
+            mRight: CGFloat = VALUE_NOT_SET,
+            mBottom: CGFloat = VALUE_NOT_SET
 
     public var alignWithParent: Bool = false
 
@@ -290,10 +292,18 @@ open class JustRelativeLayout: JustViewGroup {
 
     private var mDirtyFresh = true
 
+    private var layoutSize = CGSize.zero
+
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        var childLayoutSize: CGSize = CGSize.zero
+        childLayoutSize = measureChild(size)
+        return uiViewExtension.padding.getMaxSize(size: childLayoutSize)
+    }
+
     override public func onLayout(_ changed: Bool, _ top: CGFloat, _ left: CGFloat, _ right: CGFloat, _ bottom: CGFloat) {
         super.onLayout(changed, top, left, right, bottom)
 
-        for (index, child) in subviews.enumerated() {
+        for (_, child) in subviews.enumerated() {
 
             if child.isHidden {
                 continue
@@ -308,11 +318,14 @@ open class JustRelativeLayout: JustViewGroup {
                     height: params.height)
             child.layoutSubviews()
         }
-
     }
 
     override public func onMeasure(_ size: CGSize) {
         super.onMeasure(size)
+        layoutSize = measureChild(size)
+    }
+
+    private func measureChild(_ size: CGSize) -> CGSize {
 
         let selfSize = uiViewExtension.padding.getMinSize(size: size)
 
@@ -326,6 +339,11 @@ open class JustRelativeLayout: JustViewGroup {
         let height = selfSize.height
         let width = selfSize.width
 
+        var minTop: CGFloat = 0
+        var minLeft: CGFloat = 0
+        var maxRight: CGFloat = 0
+        var maxBottom: CGFloat = 0
+
         if mDirtyFresh {
             mDirtyFresh = false
             sortChildren()
@@ -334,19 +352,36 @@ open class JustRelativeLayout: JustViewGroup {
         var views: [UIView] = mSortedHorizontalChildren
         var count = views.count
 
+        // initial params with first unhidden view
+        var initFlag: Bool = true
+
         for index in 0 ..< count {
-            var child: UIView = views[index]
+
+            let child: UIView = views[index]
 
             if child.isHidden {
                 continue
             }
 
-            var params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
+            let params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
             var rules: [BindViewWithRule] = params.getRules()
 
             applyHorizontalSizeRules(params: params, width: width, rules: &rules)
             measureChildHorizontal(view: child, width: width, height: height)
             positionHorizontalChildViews(child: child, left: pLeft, right: pRight)
+
+            if initFlag {
+                initFlag = false
+                minTop = params.mTop
+                minLeft = params.mLeft
+                maxBottom = params.mBottom
+                maxRight = params.mRight
+            }
+
+            minTop = min(minTop, params.mTop)
+            minLeft = min(minLeft, params.mLeft)
+            maxBottom = max(maxBottom, params.mBottom)
+            maxRight = max(maxBottom, params.mRight)
         }
 
         views = mSortedVerticalChildren
@@ -359,13 +394,20 @@ open class JustRelativeLayout: JustViewGroup {
                 continue
             }
 
-            var params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
+            let params: RelativeLayoutParams = child.getLayoutParams() as! RelativeLayoutParams
             var rules: [BindViewWithRule] = params.getRules()
 
             applyVerticalSizeRules(params: params, height: height, rules: &rules)
             measureChildVertical(view: child, width: width, height: height)
             positionVerticalChildViews(child: child, top: pTop, bottom: pBottom)
+
+            minTop = min(minTop, params.mTop)
+            minLeft = min(minLeft, params.mLeft)
+            maxBottom = max(maxBottom, params.mBottom)
+            maxRight = max(maxRight, params.mRight)
         }
+
+        return CGSize(width: maxRight - minLeft, height: maxBottom - minTop)
     }
 
     private func applyVerticalSizeRules(params childParams: RelativeLayoutParams, height: CGFloat,
@@ -376,6 +418,9 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         var anchorParams: RelativeLayoutParams?
+
+        childParams.mTop = RelativeLayoutParams.VALUE_NOT_SET
+        childParams.mBottom = RelativeLayoutParams.VALUE_NOT_SET
 
         anchorParams = getRelatedViewParams(rules: &rules, relation: .ABOVE)
 
@@ -484,20 +529,26 @@ open class JustRelativeLayout: JustViewGroup {
                                            bottom: CGFloat) {
 
         let childParams: RelativeLayoutParams = child.uiViewExtension.layoutParams as! RelativeLayoutParams
-        let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
 
-        let childHeight = childParams.height
-
-        switch verticalGravity {
-        case Gravity.CENTER_VERTICAL.getValue():
-            childParams.mTop = (bottom - top - childHeight) / 2
-            childParams.mTop += CGFloat(childParams.topMargin - childParams.bottomMargin)
-        case Gravity.BOTTOM.getValue():
-            childParams.mTop = bottom - top - childHeight
-        default:
-            childParams.mTop = top + CGFloat(childParams.topMargin)
+        if childParams.mTop == RelativeLayoutParams.VALUE_NOT_SET && childParams.mBottom != RelativeLayoutParams.VALUE_NOT_SET {
+            // set mLeft
+            childParams.mTop = childParams.mBottom - childParams.height
+        } else if childParams.mTop != RelativeLayoutParams.VALUE_NOT_SET && childParams.mBottom == RelativeLayoutParams.VALUE_NOT_SET {
+            childParams.mBottom = childParams.mTop + childParams.height
+        } else if childParams.mTop == RelativeLayoutParams.VALUE_NOT_SET && childParams.mBottom == RelativeLayoutParams.VALUE_NOT_SET {
+            let verticalGravity = Gravity.getVerticalGravity(gravity: childParams.layoutGravity)
+            let childHeight = childParams.height
+            switch verticalGravity {
+            case Gravity.CENTER_VERTICAL.getValue():
+                childParams.mTop = (bottom - top - childHeight) / 2
+                childParams.mTop += CGFloat(childParams.topMargin - childParams.bottomMargin)
+            case Gravity.BOTTOM.getValue():
+                childParams.mTop = bottom - top - childHeight
+            default:
+                childParams.mTop = top + CGFloat(childParams.topMargin)
+            }
+            childParams.mBottom = childParams.mTop + childParams.height
         }
-        childParams.mBottom = childParams.mTop + childParams.height
     }
 
     public func positionHorizontalChildViews(child: UIView,
@@ -505,19 +556,26 @@ open class JustRelativeLayout: JustViewGroup {
                                              right: CGFloat) {
 
         let childParams: RelativeLayoutParams = child.uiViewExtension.layoutParams as! RelativeLayoutParams
-        let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
         let childWidth = childParams.width
-        switch horizontalGravity {
-        case Gravity.CENTER_HORIZONTAL.getValue():
-            childParams.mLeft = (right - left - childWidth) / 2 + left
-            childParams.mLeft += (CGFloat(childParams.leftMargin - childParams.rightMargin))
-        case Gravity.RIGHT.getValue():
-            childParams.mLeft = right - left - childWidth - CGFloat(childParams.rightMargin)
-        default:
-            childParams.mLeft = left + CGFloat(childParams.leftMargin)
-        }
 
-        childParams.mRight = childParams.mLeft + childParams.width
+        if childParams.mLeft == RelativeLayoutParams.VALUE_NOT_SET && childParams.mRight != RelativeLayoutParams.VALUE_NOT_SET {
+            // set mLeft
+            childParams.mLeft = childParams.mRight - childParams.width
+        } else if childParams.mLeft != RelativeLayoutParams.VALUE_NOT_SET && childParams.mRight == RelativeLayoutParams.VALUE_NOT_SET {
+            childParams.mRight = childParams.mLeft + childParams.height
+        } else if childParams.mLeft == RelativeLayoutParams.VALUE_NOT_SET && childParams.mRight == RelativeLayoutParams.VALUE_NOT_SET {
+            let horizontalGravity = Gravity.getHorizontalGravity(gravity: childParams.layoutGravity)
+            switch horizontalGravity {
+            case Gravity.CENTER_HORIZONTAL.getValue():
+                childParams.mLeft = (right - left - childWidth) / 2 + left
+                childParams.mLeft += (CGFloat(childParams.leftMargin - childParams.rightMargin))
+            case Gravity.RIGHT.getValue():
+                childParams.mLeft = right - left - childWidth - CGFloat(childParams.rightMargin)
+            default:
+                childParams.mLeft = left + CGFloat(childParams.leftMargin)
+            }
+            childParams.mRight = childParams.mLeft + childParams.width
+        }
     }
 
     ///
@@ -534,8 +592,8 @@ open class JustRelativeLayout: JustViewGroup {
         var anchorParams: RelativeLayoutParams?
 
         // min
-        childParams.mLeft = CGFloat(Int.min)
-        childParams.mRight = CGFloat(Int.min)
+        childParams.mLeft = RelativeLayoutParams.VALUE_NOT_SET
+        childParams.mRight = RelativeLayoutParams.VALUE_NOT_SET
 
         // get the view left of current View
         anchorParams = getRelatedViewParams(rules: &rules, relation: .LEFT_OF)
@@ -794,7 +852,10 @@ open class JustRelativeLayout: JustViewGroup {
         }
 
         addSubview(view)
+
+        // bind view with params
         view.setViewId(id: UIView.generateViewId())
+        params.bindWith(view: view)
     }
 
     override public func addView(view: UIView) {

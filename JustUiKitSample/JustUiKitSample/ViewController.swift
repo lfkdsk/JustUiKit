@@ -29,8 +29,6 @@ class ViewController: UIViewController {
         sectionLabel.font = UIFont.systemFont(ofSize: 17)
         sectionLabel.sizeToFit()
         sectionLabel.backgroundColor = UIColor.brown
-        // sizeToFit函数的意思是让视图的尺寸刚好包裹其内容。
-        // 注意sizeToFit方法必要在设置字体、文字后调用才正确。
         return sectionLabel
     }
 
@@ -164,20 +162,32 @@ class ViewController: UIViewController {
 
         let lfkdsk: JustRelativeLayout = view as! JustRelativeLayout
 
-        let view1 = createSectionLabel("FFFFFFFFFFF__________")
-        let view2 = createSectionLabel("__________")
-        let view3 = createSectionLabel("__333333________")
+        let view1 = createSectionLabel("11111111111111111111")
+        let view2 = createSectionLabel("22222222222222222222")
+        let view3 = createSectionLabel("33333333333333333333")
 
         let params = RelativeLayoutParams.generateDefaultParams()
 
         params.leftOf(view2)
+//        params.alignLeftTo(left: view3)
         params.bellowOf(view3)
+        params.topMargin = 10
+        // 2 <==== 1 ====> 3
 
+        //      3
+        //      |
+        // 1 ==== 2
         lfkdsk.addView(view: view1, params: params)
 
-        lfkdsk.addView(view: view2)
+        let params2 = RelativeLayoutParams(params)
+        params2.layoutGravity = Gravity.RIGHT
 
-        lfkdsk.addView(view: view3)
+        lfkdsk.addView(view: view2, params: params2)
+
+        let params_center = RelativeLayoutParams(params)
+        params_center.layoutGravity = Gravity.CENTER
+
+        lfkdsk.addView(view: view3, params: params_center)
     }
 
     override func loadView() {

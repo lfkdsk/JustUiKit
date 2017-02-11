@@ -28,12 +28,18 @@ public class LayoutParams {
     public static let MATCH_PARENT: CGFloat = -1
     public static let WRAP_CONTENT: CGFloat = -2
 
-    var width: CGFloat = 0
-    var height: CGFloat = 0
+    public var width: CGFloat = 0
+    public var height: CGFloat = 0
+
+    public var bindView: UIView? = nil
 
     public init(width: CGFloat, height: CGFloat) {
         self.width = width
         self.height = height
+    }
+
+    public func bindWith(view: UIView?) {
+        self.bindView = view
     }
 
     public init(_ params: LayoutParams) {

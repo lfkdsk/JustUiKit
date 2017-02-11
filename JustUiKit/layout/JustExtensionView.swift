@@ -62,7 +62,6 @@ public struct Padding {
 public struct UIViewExtension {
     public var padding: Padding
     internal var layoutParams: LayoutParams
-
     internal init(padding: Padding, params: LayoutParams) {
         self.padding = padding
         self.layoutParams = params
@@ -71,6 +70,11 @@ public struct UIViewExtension {
     internal init() {
         self.padding = Padding()
         self.layoutParams = LayoutParams.generateDefaultLayoutParams()
+    }
+    
+    public mutating func setLayoutParams(params: LayoutParams) {
+        params.bindWith(view:layoutParams.bindView)
+        self.layoutParams = params
     }
 }
 

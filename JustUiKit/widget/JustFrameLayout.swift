@@ -220,6 +220,7 @@ open class JustFrameLayout: JustViewGroup {
         }
 
         addSubview(view)
+        params.bindWith(view: view)
     }
 
     override public func addView(view: UIView) {
