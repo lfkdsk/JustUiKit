@@ -1,0 +1,10 @@
+framework module JustUiKit {
+  umbrella header "JustUiKit.h"
+
+  export *
+  module * { export * }
+}
+
+module JustUiKit.Swift {
+    header "JustUiKit-Swift.h"
+}
