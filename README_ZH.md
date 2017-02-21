@@ -14,11 +14,11 @@ JustUiKit是一套Android样式工具iOS UI套件。 JustUiKit包含JustLinearLa
 
 * 使用 CocoaPods 安装
 
-  CocoaPods是Objective-C / Swift的依赖项管理器，它自动化和简化在项目中使用第三方库（如TangramKit）的过程。 您可以使用以下命令安装它：
+  CocoaPods是Objective-C / Swift的依赖项管理器，它自动化和简化在项目中使用第三方库（JustUiKit）的过程。 您可以使用以下命令安装它：
 
   `$ sudo gem install cocoapods`
 
-  要使用CocoaPods将TangramKit集成到您的Xcode项目中，请在Podfile中指定：
+  要使用CocoaPods将JustUiKit集成到您的Xcode项目中，请在Podfile中指定：
 
   ```ruby
   platform :ios, '8.0'
